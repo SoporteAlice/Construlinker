@@ -308,7 +308,6 @@
   <!-- ══ TOPNAV DINÁMICO UNIVERSAL ════════════════════════════ -->
   <nav class="topnav">
     <div class="topnav__inner">
-      <!-- Logo -->
       <a class="topnav__brand" href="index.html">
         <div class="brand-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 18h20v2H2z"/><path d="M12 4C8 4 5 8 5 12v6h14v-6c0-4-3-8-7-8z"/><line x1="12" y1="4" x2="12" y2="12"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -329,8 +328,8 @@
   </nav>
 
   <script>
+    // Lógica Inyectada para el TOPNAV Dinámico
     (function(){
-      // Lógica para pintar el menú correcto según el rol activo
       const s = JSON.parse(localStorage.getItem('cl_session') || '{}');
       const isWorker = s.type === 'trabajador';
       const navContainer = document.getElementById('dynamicNavLinks');
@@ -347,7 +346,7 @@
       } else {
         navContainer.innerHTML = `
           <button class="nav-link" onclick="window.location.href='index.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg><span>Inicio</span></button>
-          <button class="nav-link" onclick="window.location.href='index.html?page=buscar'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>Personal</span></button>
+          <button class="nav-link active" onclick="window.location.href='index.html?page=buscar'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>Personal</span></button>
           <button class="nav-link ${path.includes('messages') ? 'active' : ''}" onclick="window.location.href='messages.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Mensajes</span></button>
           <button class="nav-link ${path.includes('job-offer') ? 'active' : ''}" onclick="window.location.href='job-offer.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg><span>Publicar Oferta</span></button>
         `;
@@ -412,7 +411,7 @@
     { id:3,  name:"Carlos Espinoza", specialty:"Maestro de Obra",              category:"Obra gruesa",   exp:18, expLabel:"18 años exp.", location:"Callao, Lima",            availability:"busy",      tags:["Encofrado","Concreto","Acero","Albañilería","Metrado"], color:["#1A5E2A","#2A8E3E"], initials:"CE", phone:"+51 965 432 109", email:"c.espinoza@obra.pe",  whatsapp:"51965432109", about:"Maestro de obra con 18 años en construcción de edificios y estructuras de concreto armado. Experiencia liderando frentes de hasta 40 trabajadores en Lima y provincias." },
     { id:4,  name:"Sofía Quispe",    specialty:"Técnico de PRL / SSOMA",       category:"Técnicos",      exp:7,  expLabel:"7 años exp.",  location:"Surco, Lima",            availability:"available", tags:["SSOMA","ISO 45001","SCTR","IPERC","AST"],              color:["#6E3A1A","#9E5A2A"], initials:"SQ", phone:"+51 954 321 098", email:"s.quispe@safety.pe",  whatsapp:"51954321098", about:"Especialista en seguridad y salud ocupacional con experiencia en obras de edificación, minería y plantas industriales. Auditora interna certificada ISO 45001." },
     { id:5,  name:"Diego Paredes",   specialty:"Residente de Obra",            category:"Técnicos",      exp:12, expLabel:"12 años exp.", location:"La Molina, Lima",        availability:"available", tags:["MS Project","Primavera P6","Lean","BIM","Costos"],     color:["#6E1A3A","#9E2A5A"], initials:"DP", phone:"+51 943 210 987", email:"d.paredes@obra.pe",   whatsapp:"51943210987", about:"Residente de obra con 12 años gestionando proyectos de edificación en Lima. Especializado en planificación Last Planner y control de costos con S10." },
-    { id:6,  name:"Lucía Benítez",   specialty:"Electricista Industrial",       category:"Instalaciones", exp:6,  expLabel:"6 años exp.",  location:"Jesús María, Lima",      availability:"limited",   tags:["Baja Tensión","IIEE","AutoCAD Elec.","Tableros","MT"], color:["#1A6E6E","#2A9E9E"], initials:"LB", phone:"+51 932 109 876", email:"l.benitez@elect.pe",  whatsapp:"51932109876", about:"Electricista certificada con dominio en instalaciones de baja y media tensión para edificios y centros comerciales. Habilitada por el Colegio de Ingenieros del Perú." },
+    { id:6,  name:"Lucía Benítez",   specialty:"Electricista Industrial",       category:"Instalaciones", exp:6,  expLabel:"6 años exp.",  location:"Jesús María, Lima",      availability:"limited",   tags:["Baja Tensión","IIEE","AutoCAD Elec.","Tableros","MT"], color:["#1A6E6E","#2A9E9E"], initials:"LB", phone:"+51 932 109 876", email:"l.benitez@elect.pe",  whatsapp:"51932109876", about:"Electricista certificada con experiencia en instalaciones eléctricas de baja y media tensión para edificios multifamiliares y centros comerciales. Habilitada por el Colegio de Ingenieros del Perú." },
     { id:7,  name:"Marco Ríos",      specialty:"Oficial Albañil de Primera",   category:"Obra gruesa",   exp:16, expLabel:"16 años exp.", location:"Villa El Salvador, Lima", availability:"available", tags:["Muros","Pisos","Cerámicos","Tarrajeo","Caravista"],    color:["#5A3A1A","#8A5A2A"], initials:"MR", phone:"+51 921 098 765", email:"m.rios@albanil.pe",   whatsapp:"51921098765", about:"Oficial albañil de primera con 16 años de experiencia en obras de edificación en Lima. Especialista en trabajo fino y acabados de calidad certificados." },
     { id:8,  name:"Ana Fuentes",     specialty:"Pintora de Acabados",          category:"Acabados",      exp:8,  expLabel:"8 años exp.",  location:"Barranco, Lima",         availability:"available", tags:["Pintura","Empaste","Estucado","Texturas","Latex"],     color:["#1A3A5E","#2A5A8E"], initials:"AF", phone:"+51 910 987 654", email:"a.fuentes@acab.pe",   whatsapp:"51910987654", about:"Especialista en pintura y acabados finos de interiores y exteriores. Experiencia en proyectos residenciales y hoteles de 4 y 5 estrellas en Lima Metropolitana." },
     { id:9,  name:"Pedro Cárdenas",  specialty:"Operador de Grúa Torre",       category:"Maquinaria",    exp:11, expLabel:"11 años exp.", location:"Ate, Lima",              availability:"limited",   tags:["Grúa Torre","Grúa Móvil","LICONA","Rigger","OSHA"],   color:["#4E1A1A","#7E2A2A"], initials:"PC", phone:"+51 989 876 543", email:"p.cardenas@maq.pe",   whatsapp:"51989876543", about:"Operador certificado con licencia vigente MTC. 11 años operando grúa torre y móvil en obras de gran altura en Lima, con récord de cero accidentes." },
@@ -480,7 +479,8 @@
   /* ── INIT ─────────────────────────────────────────── */
   function init() {
     loadState();
-    document.getElementById('creditsNav').textContent = STATE.credits;
+    const credNav = document.getElementById('creditsNavHeader');
+    if (credNav) credNav.textContent = STATE.credits;
 
     const params = new URLSearchParams(window.location.search);
     const id = parseInt(params.get('id')) || 1;
@@ -751,7 +751,7 @@
     STATE.credits--;
     STATE.unlocked.push(id);
     saveState();
-    document.getElementById('creditsNav').textContent = STATE.credits;
+    document.getElementById('creditsNavHeader').textContent = STATE.credits;
     const p = PROFESSIONALS.find(x=>x.id===id);
     showToast(`${p.name} desbloqueado`, `Contacto visible · ${STATE.credits} crédito${STATE.credits!==1?'s':''} restante${STATE.credits!==1?'s':''}`);
     renderProfile(p);
@@ -761,7 +761,7 @@
     if (STATE.credits <= 0) { showToast('Sin créditos','Compra un pack para enviar ofertas.', false); return; }
     STATE.credits--;
     saveState();
-    document.getElementById('creditsNav').textContent = STATE.credits;
+    document.getElementById('creditsNavHeader').textContent = STATE.credits;
     const p = PROFESSIONALS.find(x=>x.id===id);
     showToast('Oferta enviada', `${p.name} ha sido notificado de tu propuesta.`);
   }
@@ -774,7 +774,7 @@
 
     STATE.credits--;
     saveState();
-    document.getElementById('creditsNav').textContent = STATE.credits;
+    document.getElementById('creditsNavHeader').textContent = STATE.credits;
 
     // Marcar botón como usado
     const btn = document.getElementById('btnAvail-' + id);
@@ -786,32 +786,32 @@
     const resultBox  = document.getElementById('availResult-' + id);
     const resultBody = document.getElementById('availResultBody-' + id);
     const availMsg = {
-      available: `✅ <strong style="color:var(--text)">${p.name}</strong> está <strong style="color:var(--green)">disponible</strong> y puede incorporarse de forma inmediata o en menos de 1 semana.`,
-      limited:   `🟡 <strong style="color:var(--text)">${p.name}</strong> tiene <strong style="color:var(--yellow)">disponibilidad limitada</strong>. Está trabajando pero evalúa nuevas propuestas. Contacta para confirmar fecha de inicio.`,
-      busy:      `🔴 <strong style="color:var(--text)">${p.name}</strong> está <strong style="color:var(--red)">no disponible</strong> actualmente. Tiene contrato a jornada completa. Puedes enviarle una oferta para cuando finalice.`,
+      available: `✅ <strong style="color:var(--text)">${p.name}</strong> está <strong style="color:var(--green)">disponible</strong> y puede incorporarse de inmediato o en menos de 1 semana.`,
+      limited:   `🟡 <strong style="color:var(--text)">${p.name}</strong> tiene <strong style="color:var(--yellow)">disponibilidad limitada</strong>. Está trabajando pero evalúa nuevas propuestas.`,
+      busy:      `🔴 <strong style="color:var(--text)">${p.name}</strong> está <strong style="color:var(--red)">no disponible</strong> actualmente.`,
     };
     if (resultBox)  resultBox.style.display = 'block';
     if (resultBody) resultBody.innerHTML = availMsg[p.availability] || availMsg.available;
 
-    showToast('Disponibilidad consultada', `${p.name} — ${p.availability === 'available' ? 'Puede incorporarse de inmediato' : p.availability === 'limited' ? 'Disponibilidad parcial' : 'No disponible actualmente'}`);
+    showToast('Disponibilidad consultada', `${p.name} — ${p.availability === 'available' ? 'Disponible' : p.availability === 'limited' ? 'Limitada' : 'Ocupado'}`);
   }
 
   /* ── ACCIÓN 6: Verificación rápida de documentación ────── */
   function verifyDocs(id) {
     const p = PROFESSIONALS.find(x=>x.id===id);
     if (!p) return;
-    if (STATE.credits <= 0) { showToast('Sin créditos','Para verificar la documentación de este candidato necesitas 1 crédito. Adquiere un pack y continúa.', false); return; }
+    if (STATE.credits <= 0) { showToast('Sin créditos','Adquiere un pack para verificar.', false); return; }
 
     STATE.credits--;
     saveState();
-    document.getElementById('creditsNav').textContent = STATE.credits;
+    document.getElementById('creditsNavHeader').textContent = STATE.credits;
 
     const btn = document.getElementById('btnVerif-' + id);
     const txt = document.getElementById('verifBtnText-' + id);
     if (btn) { btn.classList.add('used'); btn.disabled = true; }
     if (txt) txt.textContent = 'Documentación verificada ✓';
 
-    showToast('Documentación verificada', `Los documentos de ${p.name} han sido revisados y son válidos.`);
+    showToast('Documentación verificada', `Los documentos de ${p.name} son válidos.`);
   }
 
   function downloadDoc(id, docId) {
@@ -821,7 +821,7 @@
       STATE.credits--;
       STATE.unlocked.push(id);
       saveState();
-      document.getElementById('creditsNav').textContent = STATE.credits;
+      document.getElementById('creditsNavHeader').textContent = STATE.credits;
       const p = PROFESSIONALS.find(x=>x.id===id);
       showToast('Documento desbloqueado', `Acceso a documentos de ${p.name} activado.`);
       renderProfile(p);
