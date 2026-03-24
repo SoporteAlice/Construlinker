@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Publicar Oferta — Construlinker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    body { overflow-y: auto; }
+
+    .offers-page { max-width: 1100px; margin: 0 auto; padding: calc(var(--nav-h) + 28px) 20px 60px; }
+
+    /* ── PAGE HEADER ──────────────────────────────────── */
+    .op-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+    }
+    .op-title { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -.3px; color: var(--text); margin-bottom: 3px; }
+    .op-sub   { font-size: 13px; color: var(--text-muted); }
+
+    /* ── LAYOUT ───────────────────────────────────────── */
+    .op-layout { display: grid; grid-template-columns: 1fr 360px; gap: 20px; align-items: start; }
+
+    /* ── FORM CARD ────────────────────────────────────── */
+    .op-form-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 24px 26px;
+    }
+    .op-form-title {
+      font-size: 14px; font-weight: 700; color: var(--text);
+      margin-bottom: 20px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .op-form-title svg { color: var(--orange); }
+
+    /* Steps indicator */
+    .form-steps { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+    .form-step-item { display: flex; align-items: center; gap: 6px; flex: 1; }
+    .form-step-item:not(:last-child)::after { content: ''; flex: 1; height: 1px; background: var(--border); margin: 0 6px; }
+    .fsi-dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--text-dim); transition: all var(--trans);
+    }
+    .fsi-dot.active { border-color: var(--orange); background: var(--orange-dim); color: var(--orange); }
+    .fsi-dot.done   { border-color: var(--orange); background: var(--orange); color: #000; }
+    .fsi-label { font-size: 11px; font-weight: 600; color: var(--text-dim); }
+    .fsi-label.active { color: var(--text); }
+
+    /* Fields */
+    .field       { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .field label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--text-muted); }
+    .field input, .field select, .field textarea {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text);
+      font-family: inherit; font-size: 13.5px; padding: 10px 13px;
+      outline: none; width: 100%; transition: border-color var(--trans);
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--orange); }
+    .field input::placeholder, .field textarea::placeholder { color: var(--text-dim); }
+    .field select option { background: var(--surface); }
+    .field textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-hint { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+    /* Urgente toggle */
+    .urgente-toggle {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 12px 14px;
+      margin-bottom: 14px; cursor: pointer;
+      transition: border-color var(--trans);
+    }
+    .urgente-toggle:hover { border-color: var(--border-light); }
+    .urgente-toggle.on { border-color: rgba(255,107,0,.3); background: var(--orange-dim); }
+    .urgente-left { display: flex; flex-direction: column; gap: 2px; }
+    .urgente-title { font-size: 13.5px; font-weight: 700; color: var(--text); }
+    .urgente-sub   { font-size: 11.5px; color: var(--text-muted); }
+    .toggle-switch {
+      width: 40px; height: 22px; border-radius: 11px;
+      background: var(--border); position: relative;
+      transition: background var(--trans); flex-shrink: 0;
+    }
+    .toggle-switch::after {
+      content: ''; position: absolute;
+      top: 3px; left: 3px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--text-dim); transition: all var(--trans);
+    }
+    .urgente-toggle.on .toggle-switch { background: var(--orange); }
+    .urgente-toggle.on .toggle-switch::after { left: 21px; background: #000; }
+
+    /* Tipo contrato chips */
+    .tipo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .tipo-chip {
+      padding: 8px 6px; text-align: center;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); cursor: pointer;
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+      transition: all var(--trans);
+    }
+    .tipo-chip:hover { border-color: var(--border-light); color: var(--text); }
+    .tipo-chip.selected { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+
+    /* Form actions */
+    .form-actions { display: flex; gap: 10px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+
+    /* ── PREVIEW CARD ─────────────────────────────────── */
+    .op-preview-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 18px 20px;
+      margin-bottom: 14px; position: sticky; top: calc(var(--nav-h) + 20px);
+    }
+    .preview-title-bar { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; }
+    .preview-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 16px; overflow: hidden;
+      transition: border-color var(--trans);
+    }
+    .preview-card.urgent-style { border-color: rgba(255,107,0,.3); }
+    .pc-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .pc-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg,#7F2A4A,#4A2A7F);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .pc-title  { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .pc-company{ font-size: 12px; color: var(--text-muted); }
+    .pc-desc   { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
+    .pc-tags   { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+    .pc-tag    { font-size: 10px; font-weight: 500; color: var(--text-dim); border: 1px solid var(--border); padding: 2px 7px; border-radius: 2px; }
+    .pc-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border); }
+    .pc-time   { font-size: 11px; color: var(--text-dim); }
+    .pc-urgent { font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 2px; background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,107,0,.2); }
+
+    /* ── PUBLISHED LIST ───────────────────────────────── */
+    .published-section { margin-top: 0; }
+    .published-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .published-title {
+      font-size: 12px; font-weight: 700; letter-spacing: .8px;
+      text-transform: uppercase; color: var(--text-muted);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pub-count {
+      background: var(--orange-dim); color: var(--orange);
+      font-size: 10px; font-weight: 700; padding: 1px 7px;
+      border-radius: 8px; border: 1px solid rgba(255,107,0,.2);
+    }
+    .published-list { display: flex; flex-direction: column; gap: 10px; }
+    .pub-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px 16px;
+      display: flex; align-items: flex-start; gap: 12px;
+      transition: border-color var(--trans);
+      animation: fadeIn .25s ease;
+    }
+    .pub-card:hover { border-color: var(--border-light); }
+    .pub-card.urgent { border-color: rgba(255,107,0,.25); }
+    .pub-body { flex: 1; }
+    .pub-title   { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .pub-meta    { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+    .pub-tags    { display: flex; gap: 5px; flex-wrap: wrap; }
+    .pub-actions { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+    .pub-stat    { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 4px; }
+    .pub-stat svg { width: 11px; height: 11px; color: var(--orange); }
+    .pub-delete-btn {
+      background: none; border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text-dim); font-size: 11.5px; font-weight: 500;
+      padding: 4px 10px; cursor: pointer; font-family: inherit;
+      transition: all var(--trans);
+    }
+    .pub-delete-btn:hover { border-color: var(--red); color: var(--red); }
+
+    .empty-pub { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 36px 20px; color: var(--text-dim); font-size: 12.5px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); }
+
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+    @media(max-width:860px) {
+      .op-layout { grid-template-columns: 1fr; }
+      .op-preview-card { position: static; }
+      .tipo-grid { grid-template-columns: repeat(2,1fr); }
+      .field-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ TOPNAV ════════════════════════════════════════════ -->
+  <nav class="topnav">
+    <div class="topnav__inner">
+      <a class="topnav__brand" href="index.html">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M2 18h20v2H2z"/>
+            <path d="M12 4C8 4 5 8 5 12v6h14v-6c0-4-3-8-7-8z"/>
+            <line x1="12" y1="4" x2="12" y2="12"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </div>
+        <span class="brand-name">Constru<em>linker</em></span>
+      </a>
+      <div class="topnav__links">
+        <button class="nav-link" onclick="window.location.href='index.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+          <span>Inicio</span>
+        </button>
+        <button class="nav-link" onclick="window.location.href='index.html?page=buscar'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          <span>Personal</span>
+        </button>
+      </div>
+      <div class="topnav__credits" onclick="window.location.href='index.html?page=creditos'">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="credits-diamond"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+        <span id="creditsNav">10</span>
+        <span class="credits-label-nav">créditos</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══ PAGE ══════════════════════════════════════════════ -->
+  <div class="offers-page">
+
+    <div class="op-header">
+      <div>
+        <div class="op-title">Publicar Oferta de Trabajo</div>
+        <div class="op-sub">Llega a más de 614 profesionales verificados en Construlinker.</div>
+      </div>
+      <button class="btn-ghost" onclick="window.location.href='index.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><polyline points="15,18 9,12 15,6"/></svg>
+        Volver al inicio
+      </button>
+    </div>
+
+    <div class="op-layout">
+
+      <!-- ── FORMULARIO ──────────────────────────────── -->
+      <div>
+        <div class="op-form-card">
+          <div class="op-form-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            Detalles de la oferta
+          </div>
+
+          <!-- Urgente toggle -->
+          <div class="urgente-toggle" id="urgenteToggle" onclick="toggleUrgente()">
+            <div class="urgente-left">
+              <div class="urgente-title">🚨 Marcar como urgente</div>
+              <div class="urgente-sub">Aparece destacada en el feed y en el panel del trabajador</div>
+            </div>
+            <div class="toggle-switch" id="urgenteSwitch"></div>
+          </div>
+
+          <div class="field">
+            <label>Título del puesto <span style="color:var(--orange)">*</span></label>
+            <input type="text" id="f-titulo" placeholder="Ej: 3 Oficiales Albañiles para Torre en Miraflores" oninput="updatePreview()" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Categoría <span style="color:var(--orange)">*</span></label>
+              <select id="f-categoria" onchange="updatePreview()">
+                <option value="">Seleccionar...</option>
+                <option>Obra gruesa</option>
+                <option>Acabados</option>
+                <option>Instalaciones</option>
+                <option>Maquinaria y transporte</option>
+                <option>Técnicos y gestión</option>
+                <option>Auxiliares</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Número de plazas</label>
+              <input type="number" id="f-plazas" value="1" min="1" max="50" oninput="updatePreview()" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Descripción del trabajo <span style="color:var(--orange)">*</span></label>
+            <textarea id="f-desc" placeholder="Describe el trabajo, requisitos, condiciones y cualquier detalle relevante para el candidato..." oninput="updatePreview()"></textarea>
+            <div class="field-hint"><span id="descCount">0</span> caracteres</div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Ubicación / Distrito <span style="color:var(--orange)">*</span></label>
+              <input type="text" id="f-ubicacion" placeholder="Ej: Miraflores, Lima" oninput="updatePreview()" />
+            </div>
+            <div class="field">
+              <label>Duración estimada</label>
+              <input type="text" id="f-duracion" placeholder="Ej: 3 meses, Obra completa" oninput="updatePreview()" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Experiencia mínima</label>
+              <select id="f-exp">
+                <option value="">Sin requisito</option>
+                <option>1 año mínimo</option>
+                <option>2–3 años</option>
+                <option>5+ años</option>
+                <option>10+ años</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Inicio previsto</label>
+              <input type="text" id="f-inicio" placeholder="Ej: Inmediato, 15/07/2025" />
+            </div>
+          </div>
+
+          <!-- Tipo de contrato -->
+          <div class="field" style="margin-bottom:6px"><label>Tipo de contrato</label></div>
+          <div class="tipo-grid" id="tipoGrid">
+            <div class="tipo-chip selected" data-val="Jornada completa" onclick="selectTipo(this)">Jornada completa</div>
+            <div class="tipo-chip" data-val="Media jornada"    onclick="selectTipo(this)">Media jornada</div>
+            <div class="tipo-chip" data-val="Por obra"         onclick="selectTipo(this)">Por obra</div>
+            <div class="tipo-chip" data-val="Temporal"         onclick="selectTipo(this)">Temporal</div>
+            <div class="tipo-chip" data-val="Freelance"        onclick="selectTipo(this)">Freelance</div>
+            <div class="tipo-chip" data-val="A convenir"       onclick="selectTipo(this)">A convenir</div>
+          </div>
+
+          <div class="field">
+            <label>Salario / Pago <span style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
+            <input type="text" id="f-salario" placeholder="Ej: S/ 2,500 mensual, S/ 120 diario, A convenir" />
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-orange" style="flex:1" onclick="publishOffer()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14"><polyline points="20,6 9,17 4,12"/></svg>
+              Publicar oferta
+            </button>
+            <button class="btn-ghost" onclick="clearForm()">Limpiar</button>
+          </div>
+        </div>
+
+        <!-- ── PUBLICADAS ─────────────────────────────── -->
+        <div class="published-section" style="margin-top:16px">
+          <div class="published-header">
+            <div class="published-title">
+              Mis ofertas publicadas
+              <span class="pub-count" id="pubCount">0</span>
+            </div>
+            <button class="link-btn" onclick="clearAllOffers()">Borrar todas</button>
+          </div>
+          <div class="published-list" id="publishedList">
+            <div class="empty-pub" id="emptyPub">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="38" height="38" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+              <span>Aún no has publicado ninguna oferta. Usa el formulario para crear la primera.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PREVIEW ──────────────────────────────────── -->
+      <div>
+        <div class="op-preview-card">
+          <div class="preview-title-bar">Vista previa en tiempo real</div>
+          <div class="preview-card" id="previewCard">
+            <div class="pc-top">
+              <div class="pc-avatar">CA</div>
+              <div>
+                <div class="pc-title" id="prev-title">Título de la oferta…</div>
+                <div class="pc-company">Constructora Arenas · Lima</div>
+              </div>
+            </div>
+            <div class="pc-desc" id="prev-desc" style="color:var(--text-dim);font-style:italic">La descripción aparecerá aquí…</div>
+            <div class="pc-tags" id="prev-tags"></div>
+            <div class="pc-footer">
+              <span class="pc-time">Ahora mismo</span>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span class="pc-urgent" id="prev-urgent" style="display:none">🚨 URGENTE</span>
+                <button class="btn-orange sm" style="pointer-events:none">Aplicar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tips -->
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px">Consejos para más respuestas</div>
+            <div style="font-size:12px;color:var(--text-muted);display:flex;align-items:flex-start;gap:6px"><span style="color:var(--orange);flex-shrink:0">✓</span> Indica el salario — aumenta un 60% las aplicaciones</div>
+            <div style="font-size:12px;color:var(--text-muted);display:flex;align-items:flex-start;gap:6px"><span style="color:var(--orange);flex-shrink:0">✓</span> Marca como urgente si necesitas incorporación hoy</div>
+            <div style="font-size:12px;color:var(--text-muted);display:flex;align-items:flex-start;gap:6px"><span style="color:var(--orange);flex-shrink:0">✓</span> Describe el proyecto — los buenos profesionales son selectivos</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ TOAST ═════════════════════════════════════════════ -->
+  <div class="toast" id="toastEl">
+    <div class="toast__icon" id="toastIcon"></div>
+    <div class="toast__body"><strong id="toastTitle"></strong><span id="toastSub"></span></div>
+  </div>
+
+  <script>
+  'use strict';
+
+  const OFFERS_KEY = 'construlinker_offers';
+  let isUrgente = false;
+  let tipoSelected = 'Jornada completa';
+  let offers = [];
+
+  /* ── INIT ─────────────────────────────────────────── */
+  function init() {
+    try {
+      const s = JSON.parse(localStorage.getItem('construlinker_state') || '{}');
+      document.getElementById('creditsNav').textContent = s.credits ?? 10;
+      offers = JSON.parse(localStorage.getItem(OFFERS_KEY) || '[]');
+    } catch(e) {}
+    renderPublished();
+  }
+
+  /* ── URGENTE TOGGLE ───────────────────────────────── */
+  function toggleUrgente() {
+    isUrgente = !isUrgente;
+    document.getElementById('urgenteToggle').classList.toggle('on', isUrgente);
+    updatePreview();
+  }
+
+  /* ── TIPO CONTRATO ────────────────────────────────── */
+  function selectTipo(el) {
+    document.querySelectorAll('.tipo-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    tipoSelected = el.dataset.val;
+    updatePreview();
+  }
+
+  /* ── LIVE PREVIEW ─────────────────────────────────── */
+  function updatePreview() {
+    const titulo    = document.getElementById('f-titulo').value.trim()    || 'Título de la oferta…';
+    const desc      = document.getElementById('f-desc').value.trim()      || 'La descripción aparecerá aquí…';
+    const ubicacion = document.getElementById('f-ubicacion').value.trim() || '';
+    const duracion  = document.getElementById('f-duracion').value.trim()  || '';
+    const cat       = document.getElementById('f-categoria').value        || '';
+    const plazas    = document.getElementById('f-plazas').value           || '1';
+
+    document.getElementById('prev-title').textContent = titulo;
+    document.getElementById('prev-desc').textContent  = desc.length > 120 ? desc.slice(0,120) + '…' : desc;
+    document.getElementById('prev-desc').style.fontStyle = desc === 'La descripción aparecerá aquí…' ? 'italic' : 'normal';
+    document.getElementById('prev-desc').style.color = desc === 'La descripción aparecerá aquí…' ? 'var(--text-dim)' : 'var(--text-muted)';
+    document.getElementById('prev-urgent').style.display = isUrgente ? '' : 'none';
+    document.getElementById('previewCard').classList.toggle('urgent-style', isUrgente);
+    document.getElementById('descCount').textContent = document.getElementById('f-desc').value.length;
+
+    const tags = [cat, tipoSelected, ubicacion, duracion, plazas > 1 ? plazas + ' plazas' : ''].filter(Boolean);
+    document.getElementById('prev-tags').innerHTML = tags.map(t=>`<span class="pc-tag">${t}</span>`).join('');
+  }
+
+  /* ── PUBLISH ──────────────────────────────────────── */
+  function publishOffer() {
+    const titulo    = document.getElementById('f-titulo').value.trim();
+    const cat       = document.getElementById('f-categoria').value;
+    const desc      = document.getElementById('f-desc').value.trim();
+    const ubicacion = document.getElementById('f-ubicacion').value.trim();
+
+    if (!titulo)    { showToast('Título obligatorio','Escribe el título del puesto.', false); return; }
+    if (!cat)       { showToast('Categoría obligatoria','Selecciona una categoría.', false); return; }
+    if (!desc)      { showToast('Descripción obligatoria','Describe el trabajo.', false); return; }
+    if (!ubicacion) { showToast('Ubicación obligatoria','Indica el distrito o ciudad.', false); return; }
+
+    const offer = {
+      id:       Date.now(),
+      titulo, cat, desc, ubicacion,
+      duracion: document.getElementById('f-duracion').value.trim(),
+      plazas:   parseInt(document.getElementById('f-plazas').value) || 1,
+      tipo:     tipoSelected,
+      salario:  document.getElementById('f-salario').value.trim(),
+      exp:      document.getElementById('f-exp').value,
+      inicio:   document.getElementById('f-inicio').value.trim(),
+      urgente:  isUrgente,
+      company:  'Constructora Arenas',
+      time:     new Date().toLocaleString('es-PE', { dateStyle:'short', timeStyle:'short' }),
+      views:    0, applicants: 0
+    };
+
+    offers.unshift(offer);
+    try { localStorage.setItem(OFFERS_KEY, JSON.stringify(offers)); } catch(e) {}
+
+    clearForm();
+    renderPublished();
+    showToast('¡Oferta publicada!', `"${titulo}" ya es visible para los trabajadores.`);
+  }
+
+  /* ── RENDER PUBLISHED ─────────────────────────────── */
+  function renderPublished() {
+    const list  = document.getElementById('publishedList');
+    const empty = document.getElementById('emptyPub');
+    const count = document.getElementById('pubCount');
+    count.textContent = offers.length;
+
+    if (!offers.length) {
+      empty.style.display = 'flex';
+      list.innerHTML = '';
+      list.appendChild(empty);
+      return;
+    }
+    empty.style.display = 'none';
+    list.innerHTML = offers.map(o => `
+      <div class="pub-card ${o.urgente ? 'urgent' : ''}">
+        <div class="pub-body">
+          <div class="pub-title">
+            ${o.urgente ? '<span style="font-size:9px;font-weight:700;background:var(--orange);color:#000;padding:1px 5px;border-radius:2px;margin-right:6px">URGENTE</span>' : ''}
+            ${o.titulo}
+          </div>
+          <div class="pub-meta">${o.cat} · ${o.ubicacion} · ${o.time}</div>
+          <div class="pub-tags">
+            <span class="pc-tag">${o.tipo}</span>
+            ${o.duracion ? `<span class="pc-tag">${o.duracion}</span>` : ''}
+            ${o.plazas > 1 ? `<span class="pc-tag">${o.plazas} plazas</span>` : ''}
+            ${o.salario ? `<span class="pc-tag">${o.salario}</span>` : ''}
+          </div>
+        </div>
+        <div class="pub-actions">
+          <div class="pub-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            ${o.views} vistas
+          </div>
+          <button class="pub-delete-btn" onclick="deleteOffer(${o.id})">Eliminar</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function deleteOffer(id) {
+    offers = offers.filter(o => o.id !== id);
+    try { localStorage.setItem(OFFERS_KEY, JSON.stringify(offers)); } catch(e) {}
+    renderPublished();
+    showToast('Oferta eliminada','La oferta ya no es visible para los trabajadores.');
+  }
+
+  function clearAllOffers() {
+    if (!offers.length) return;
+    offers = [];
+    try { localStorage.setItem(OFFERS_KEY, JSON.stringify(offers)); } catch(e) {}
+    renderPublished();
+    showToast('Historial borrado','Todas las ofertas han sido eliminadas.');
+  }
+
+  /* ── CLEAR FORM ───────────────────────────────────── */
+  function clearForm() {
+    ['f-titulo','f-desc','f-ubicacion','f-duracion','f-inicio','f-salario'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('f-categoria').value = '';
+    document.getElementById('f-plazas').value = '1';
+    document.getElementById('f-exp').value = '';
+    isUrgente = false;
+    tipoSelected = 'Jornada completa';
+    document.getElementById('urgenteToggle').classList.remove('on');
+    document.querySelectorAll('.tipo-chip').forEach((c,i) => c.classList.toggle('selected', i===0));
+    updatePreview();
+  }
+
+  /* ── TOAST ────────────────────────────────────────── */
+  let toastTimer;
+  function showToast(title, sub, ok=true) {
+    const el = document.getElementById('toastEl');
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastSub').textContent   = sub;
+    document.getElementById('toastIcon').innerHTML    = ok
+      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><polyline points="20,6 9,17 4,12"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>`;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

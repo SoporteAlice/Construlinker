@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Construlinker — Panel del Profesional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="worker-styles.css"/>
+</head>
+<body>
+
+  <!-- ══ TOPNAV TRABAJADOR ════════════════════════════════ -->
+  <nav class="topnav" id="topnav">
+    <div class="topnav__inner">
+      <a class="topnav__brand" href="index.html">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M2 18h20v2H2z"/>
+            <path d="M12 4C8 4 5 8 5 12v6h14v-6c0-4-3-8-7-8z"/>
+            <line x1="12" y1="4" x2="12" y2="12"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </div>
+        <span class="brand-name">Constru<em>linker</em></span>
+      </a>
+
+      <!-- Role badge -->
+      <div class="role-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Panel Profesional
+      </div>
+
+      <div class="topnav__links">
+        <button class="nav-link active" data-page="dashboard" onclick="navigate('dashboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Inicio</span>
+        </button>
+        <button class="nav-link" data-page="perfil" onclick="navigate('perfil')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Mi Perfil</span>
+        </button>
+        <button class="nav-link" data-page="documentos" onclick="navigate('documentos')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+          <span>Documentos</span>
+        </button>
+        <button class="nav-link" data-page="actividad" onclick="navigate('actividad')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          <span>Actividad</span>
+        </button>
+        <button class="nav-link" data-page="empleo" onclick="navigate('empleo')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+          <span>Ofertas</span>
+        </button>
+      </div>
+
+      <!-- Availability quick toggle -->
+      <div class="avail-toggle-nav" id="availToggleNav" onclick="navigate('perfil')">
+        <div class="avail-pulse" id="navAvailDot"></div>
+        <span id="navAvailLabel">Disponible</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══ APP MAIN ══════════════════════════════════════════ -->
+  <main class="app-main">
+
+    <!-- PAGE: DASHBOARD ─────────────────────────────────── -->
+    <div class="page active" id="page-dashboard">
+      <div class="w-layout">
+
+        <!-- Left: profile card -->
+        <aside class="w-sidebar-left">
+          <div class="w-profile-card" id="wProfileCard">
+            <!-- Inyectado por JS -->
+          </div>
+          <div class="widget">
+            <div class="widget__title">Completar perfil</div>
+            <div class="completion-bar-wrap">
+              <div class="completion-bar"><div class="completion-fill" id="completionFill" style="width:45%"></div></div>
+              <span class="completion-pct" id="completionPct">45%</span>
+            </div>
+            <div class="completion-items" id="completionItems"></div>
+          </div>
+        </aside>
+
+        <!-- Center: feed/activity -->
+        <section class="w-center">
+
+          <!-- Estado rápido banner -->
+          <div class="status-banner" id="statusBanner">
+            <div class="status-banner__left">
+              <div class="avail-pulse" id="bannerDot"></div>
+              <div>
+                <div class="status-banner__title" id="bannerTitle">Tu estado actual</div>
+                <div class="status-banner__sub" id="bannerSub">Las empresas pueden contactarte</div>
+              </div>
+            </div>
+            <div class="status-banner__actions">
+              <button class="btn-ghost sm-btn" onclick="navigate('perfil')">Cambiar estado</button>
+            </div>
+          </div>
+
+          <!-- Stats cards -->
+          <div class="w-stats-grid">
+            <div class="w-stat-card">
+              <div class="w-stat-icon orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <div><div class="w-stat-val" id="statViews">0</div><div class="w-stat-lbl">Veces visto</div></div>
+            </div>
+            <div class="w-stat-card">
+              <div class="w-stat-icon green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+              </div>
+              <div><div class="w-stat-val" id="statOffers">0</div><div class="w-stat-lbl">Ofertas recibidas</div></div>
+            </div>
+            <div class="w-stat-card">
+              <div class="w-stat-icon blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              </div>
+              <div><div class="w-stat-val" id="statContacts">0</div><div class="w-stat-lbl">Empresas contactaron</div></div>
+            </div>
+            <div class="w-stat-card">
+              <div class="w-stat-icon purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+              </div>
+              <div><div class="w-stat-val" id="statDocs">0</div><div class="w-stat-lbl">Docs descargados</div></div>
+            </div>
+          </div>
+
+          <!-- Actividad reciente -->
+          <div class="w-section-title">Actividad reciente</div>
+          <div class="w-activity-list" id="activityList">
+            <div class="w-activity-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="36" height="36" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span>Aún no hay actividad. Tu perfil está activo y esperando visitas.</span>
+            </div>
+          </div>
+
+          <!-- Ofertas pendientes -->
+          <div class="w-section-title" style="margin-top:24px">
+            Últimas ofertas recibidas
+            <span class="badge-count" id="offersCount">0</span>
+          </div>
+          <div id="offersList">
+            <div class="w-empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="36" height="36" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+              <span>No tienes ofertas todavía. Mantén tu perfil al día para aparecer en más búsquedas.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right: sidebar -->
+        <aside class="w-sidebar-right">
+          <div class="widget">
+            <div class="widget__title">Consejos para destacar</div>
+            <div class="tip-list">
+              <div class="tip-item" id="tip-foto">
+                <div class="tip-icon pending">📷</div>
+                <div><div class="tip-text">Añade una foto profesional</div><div class="tip-sub">Aumenta un 70% las visitas</div></div>
+              </div>
+              <div class="tip-item" id="tip-prl">
+                <div class="tip-icon pending">🦺</div>
+                <div><div class="tip-text">Sube tu certificado PRL</div><div class="tip-sub">Obligatorio en muchas obras</div></div>
+              </div>
+              <div class="tip-item" id="tip-cv">
+                <div class="tip-icon pending">📄</div>
+                <div><div class="tip-text">Sube tu CV actualizado</div><div class="tip-sub">Las empresas lo descargan</div></div>
+              </div>
+              <div class="tip-item" id="tip-about">
+                <div class="tip-icon pending">✏️</div>
+                <div><div class="tip-text">Completa tu descripción</div><div class="tip-sub">Más de 150 caracteres</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="widget">
+            <div class="widget__title">Enlace a tu perfil</div>
+            <div class="profile-link-box" id="profileLinkBox">
+              construlinker.pe/<span id="profileSlug">tu-perfil</span>
+            </div>
+            <button class="btn-orange-outline" style="width:100%;margin-top:8px" onclick="copyProfileLink()">Copiar enlace</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- PAGE: MI PERFIL ──────────────────────────────────── -->
+    <div class="page" id="page-perfil">
+      <div class="w-edit-layout">
+
+        <div class="w-edit-header">
+          <div>
+            <div class="w-edit-title">Mi Perfil Profesional</div>
+            <div class="w-edit-sub">Esta es la información que verán las empresas cuando accedan a tu perfil.</div>
+          </div>
+          <button class="btn-orange" id="saveProfileBtn" onclick="saveProfile()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><polyline points="20,6 9,17 4,12"/></svg>
+            Guardar cambios
+          </button>
+        </div>
+
+        <div class="w-edit-grid">
+
+          <!-- Disponibilidad -->
+          <div class="w-edit-card full-width">
+            <div class="w-edit-card__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="15" height="15"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+              Estado de disponibilidad
+            </div>
+            <div class="avail-selector-grid" id="availSelector">
+              <div class="avail-opt" data-val="available" onclick="setAvailability('available')">
+                <div class="ao-dot green"></div>
+                <div class="ao-info">
+                  <div class="ao-title">Disponible</div>
+                  <div class="ao-desc">Puedo incorporarme de inmediato</div>
+                </div>
+                <div class="ao-check">✓</div>
+              </div>
+              <div class="avail-opt" data-val="limited" onclick="setAvailability('limited')">
+                <div class="ao-dot yellow"></div>
+                <div class="ao-info">
+                  <div class="ao-title">Disponibilidad Limitada</div>
+                  <div class="ao-desc">Tengo trabajo pero evalúo propuestas</div>
+                </div>
+                <div class="ao-check">✓</div>
+              </div>
+              <div class="avail-opt" data-val="busy" onclick="setAvailability('busy')">
+                <div class="ao-dot red"></div>
+                <div class="ao-info">
+                  <div class="ao-title">No Disponible</div>
+                  <div class="ao-desc">Contratado a jornada completa</div>
+                </div>
+                <div class="ao-check">✓</div>
+              </div>
+              <div class="avail-opt" data-val="leave" onclick="confirmLeave()">
+                <div class="ao-dot gray"></div>
+                <div class="ao-info">
+                  <div class="ao-title">Baja voluntaria</div>
+                  <div class="ao-desc">Salir de la bolsa de trabajo</div>
+                </div>
+                <div class="ao-check">✓</div>
+              </div>
+            </div>
+            <div class="avail-note" id="availNote"></div>
+          </div>
+
+          <!-- Datos personales -->
+          <div class="w-edit-card">
+            <div class="w-edit-card__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="15" height="15"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Datos personales
+            </div>
+            <div class="edit-form">
+              <div class="form-row cols-2">
+                <div class="field"><label>Nombre</label><input type="text" id="edit-nombre" /></div>
+                <div class="field"><label>Apellido</label><input type="text" id="edit-apellido" /></div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="field"><label>Teléfono / WhatsApp</label><input type="tel" id="edit-phone" /></div>
+                <div class="field"><label>Email</label><input type="email" id="edit-email" /></div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label>Ubicación</label><input type="text" id="edit-location" /></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Perfil profesional -->
+          <div class="w-edit-card">
+            <div class="w-edit-card__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="15" height="15"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              Perfil profesional
+            </div>
+            <div class="edit-form">
+              <div class="form-row cols-2">
+                <div class="field">
+                  <label>Categoría</label>
+                  <select id="edit-categoria" onchange="updateEditOficios()">
+                    <option value="Obra gruesa">Obra Gruesa</option>
+                    <option value="Acabados">Acabados</option>
+                    <option value="Instalaciones">Instalaciones</option>
+                    <option value="Maquinaria">Maquinaria y Transporte</option>
+                    <option value="Técnicos">Técnicos y Gestión</option>
+                    <option value="Auxiliares">Auxiliares</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Especialidad</label>
+                  <input type="text" id="edit-specialty" />
+                </div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="field">
+                  <label>Años de experiencia</label>
+                  <select id="edit-exp">
+                    <option value="1">Menos de 1 año</option>
+                    <option value="2">1–2 años</option>
+                    <option value="3">3–5 años</option>
+                    <option value="6">6–9 años</option>
+                    <option value="10">10–15 años</option>
+                    <option value="16">Más de 15 años</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Modalidad preferida</label>
+                  <select id="edit-modalidad">
+                    <option>Presencial</option>
+                    <option>Por obra / proyecto</option>
+                    <option>Jornada completa</option>
+                    <option>Media jornada</option>
+                    <option>Cualquiera</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>Sobre mí</label>
+                  <textarea id="edit-about" rows="4"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Habilidades -->
+          <div class="w-edit-card full-width">
+            <div class="w-edit-card__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="15" height="15"><polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              Habilidades y herramientas
+            </div>
+            <div class="skills-input-wrap" id="editSkillsWrap" onclick="document.getElementById('editSkillsInp').focus()">
+              <input class="skills-input" id="editSkillsInp" placeholder="Escribe y pulsa Enter para añadir…" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: DOCUMENTOS ────────────────────────────────── -->
+    <div class="page" id="page-documentos">
+      <div class="w-docs-layout">
+        <div class="w-edit-header">
+          <div>
+            <div class="w-edit-title">Mis Documentos</div>
+            <div class="w-edit-sub">Las empresas usan 1 crédito para descargar cada documento. Mantén tus certificaciones actualizadas.</div>
+          </div>
+        </div>
+        <div class="docs-main-grid" id="docsMainGrid">
+          <!-- Inyectado por JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: ACTIVIDAD ─────────────────────────────────── -->
+    <div class="page" id="page-actividad">
+      <div class="w-activity-layout">
+        <div class="w-edit-header">
+          <div>
+            <div class="w-edit-title">Mi Actividad</div>
+            <div class="w-edit-sub">Registro de empresas que han visto o interactuado con tu perfil.</div>
+          </div>
+        </div>
+        <div class="activity-full-list" id="activityFullList">
+          <div class="w-empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            <span>Aquí aparecerán las empresas que visiten o desbloqueen tu perfil.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: BUSCAR EMPLEO ─────────────────────────────── -->
+    <div class="page" id="page-empleo">
+      <div class="w-empleo-layout">
+        <div class="w-edit-header">
+          <div>
+            <div class="w-edit-title">Ofertas de empleo</div>
+            <div class="w-edit-sub">Publicadas por empresas registradas en Construlinker.</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <select class="sort-select" id="empleoFilter" onchange="renderEmpleos()">
+              <option value="all">Todas las categorías</option>
+              <option value="Obra gruesa">Obra Gruesa</option>
+              <option value="Acabados">Acabados</option>
+              <option value="Instalaciones">Instalaciones</option>
+              <option value="Maquinaria">Maquinaria</option>
+              <option value="Técnicos">Técnicos</option>
+              <option value="Auxiliares">Auxiliares</option>
+            </select>
+          </div>
+        </div>
+        <div class="empleo-grid" id="empleoGrid"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══ MODAL: CONFIRMAR BAJA ════════════════════════════ -->
+  <div class="modal-overlay" id="leaveModal" onclick="closeModalOverlay(event,'leaveModal')">
+    <div class="modal-box small" id="leaveModalBox">
+      <div class="modal-header">
+        <div class="modal-title" style="color:var(--red)">Baja voluntaria</div>
+        <button class="modal-close" onclick="closeModal('leaveModal')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13.5px;color:var(--text-muted);line-height:1.65;margin-bottom:20px">
+          Tu perfil quedará marcado como <strong style="color:var(--text)">No disponible</strong> y <strong style="color:var(--text)">no aparecerás en búsquedas</strong> de personal. Podrás reactivarlo en cualquier momento desde tu panel.
+        </p>
+        <div style="display:flex;gap:10px">
+          <button class="btn-orange" style="background:var(--red);flex:1" onclick="executeBaja()">Confirmar baja</button>
+          <button class="btn-ghost" style="flex:1" onclick="closeModal('leaveModal')">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: CONTRATACIÓN CONFIRMADA ══════════════════ -->
+  <div class="modal-overlay" id="hireModal" onclick="closeModalOverlay(event,'hireModal')">
+    <div class="modal-box small" id="hireModalBox">
+      <div class="modal-header">
+        <div class="modal-title">Confirmar contratación</div>
+        <button class="modal-close" onclick="closeModal('hireModal')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13.5px;color:var(--text-muted);line-height:1.65;margin-bottom:16px">Una empresa ha confirmado tu contratación. Indica el tipo de contrato para que el sistema actualice tu estado:</p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+          <button class="hire-type-btn" onclick="confirmHire('full')">
+            <span>Jornada completa</span>
+            <span style="font-size:11px;color:var(--text-muted)">→ Estado: No disponible</span>
+          </button>
+          <button class="hire-type-btn" onclick="confirmHire('partial')">
+            <span>Contrato parcial / por obra</span>
+            <span style="font-size:11px;color:var(--text-muted)">→ Estado: Disponibilidad limitada</span>
+          </button>
+        </div>
+        <button class="btn-ghost w-full" onclick="closeModal('hireModal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TOAST ════════════════════════════════════════════ -->
+  <div class="toast" id="toastEl">
+    <div class="toast__icon" id="toastIcon"></div>
+    <div class="toast__body"><strong id="toastTitle"></strong><span id="toastSub"></span></div>
+  </div>
+
+  <script src="worker-app.js"></script>
+</body>
+</html>

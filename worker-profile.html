@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfil Profesional — Construlinker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    /* ── PROFILE PAGE ─────────────────────────────────── */
+    body { overflow-y: auto; }
+
+    .profile-page { max-width: 960px; margin: 0 auto; padding: calc(var(--nav-h) + 28px) 20px 60px; }
+
+    /* ── COVER ────────────────────────────────────────── */
+    .pp-cover {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 0;
+    }
+    .pp-cover__bg {
+      height: 160px;
+      background: linear-gradient(135deg, #0A0A18 0%, #18080A 40%, #080A18 100%);
+      position: relative; overflow: hidden;
+    }
+    .pp-cover__bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 14px, rgba(255,107,0,.03) 14px, rgba(255,107,0,.03) 15px);
+    }
+    .pp-cover__bg::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--surface));
+    }
+    .pp-cover__cat-label {
+      position: absolute; top: 16px; left: 20px; z-index: 2;
+      font-size: 9.5px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--orange);
+      background: var(--orange-dim); border: 1px solid rgba(255,107,0,.2);
+      padding: 3px 10px; border-radius: 2px;
+    }
+
+    /* ── PROFILE HEADER CARD ──────────────────────────── */
+    .pp-header-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0 28px 24px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .pp-avatar-row {
+      display: flex; align-items: flex-end;
+      justify-content: space-between;
+      margin-top: -44px; margin-bottom: 14px;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .pp-avatar-wrap { position: relative; }
+    .pp-avatar {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      border: 3px solid var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px; font-weight: 700; color: #fff;
+      filter: grayscale(100%) brightness(.75);
+      transition: filter .4s ease;
+      cursor: default; overflow: hidden;
+    }
+    .pp-avatar:hover { filter: grayscale(0%) brightness(1); }
+    .pp-avatar img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(100%) brightness(.75);
+      transition: filter .4s ease;
+    }
+    .pp-avatar:hover img { filter: grayscale(0%) brightness(1); }
+    .pp-online-dot {
+      position: absolute; bottom: 6px; right: 6px;
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid var(--surface);
+    }
+    .pp-online-dot.available { background: var(--green); }
+    .pp-online-dot.limited   { background: var(--yellow); }
+    .pp-online-dot.busy      { background: var(--red); }
+
+    .pp-header-actions { display: flex; gap: 8px; align-self: flex-end; flex-wrap: wrap; }
+
+    .pp-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 26px; font-weight: 700; letter-spacing: -.3px;
+      color: var(--text); margin-bottom: 3px;
+    }
+    .pp-specialty { font-size: 14px; color: var(--orange); font-weight: 600; margin-bottom: 10px; }
+    .pp-meta-row {
+      display: flex; gap: 18px; flex-wrap: wrap;
+      font-size: 12.5px; color: var(--text-muted); margin-bottom: 12px;
+    }
+    .pp-meta-item { display: flex; align-items: center; gap: 5px; }
+    .pp-meta-item svg { width: 12px; height: 12px; color: var(--text-dim); flex-shrink: 0; }
+
+    .pp-avail-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11px; font-weight: 700; letter-spacing: .5px;
+      padding: 4px 10px; border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .pp-avail-badge.available { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,.2); }
+    .pp-avail-badge.limited   { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(234,179,8,.2); }
+    .pp-avail-badge.busy      { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,.2); }
+
+    /* ── RATING STARS ─────────────────────────────────── */
+    .pp-rating { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    .stars { display: flex; gap: 2px; }
+    .star { font-size: 14px; }
+    .star.full  { color: var(--orange); }
+    .star.empty { color: var(--text-dim); }
+    .star.half  { color: var(--orange); opacity: .5; }
+    .pp-rating-val { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--text); }
+    .pp-rating-count { font-size: 12px; color: var(--text-dim); }
+
+    /* ── MAIN BODY ────────────────────────────────────── */
+    .pp-body {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 16px; align-items: start;
+    }
+    .pp-col-main { display: flex; flex-direction: column; gap: 12px; }
+    .pp-col-aside { display: flex; flex-direction: column; gap: 12px; position: sticky; top: calc(var(--nav-h) + 20px); }
+
+    /* ── CARDS ────────────────────────────────────────── */
+    .pp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+    }
+    .pp-card__title {
+      font-size: 12px; font-weight: 700; letter-spacing: .8px;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pp-card__title svg { color: var(--orange); }
+
+    /* About */
+    .pp-about-text { font-size: 13.5px; color: var(--text-muted); line-height: 1.7; }
+
+    /* Tags */
+    .pp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pp-tag {
+      font-size: 11px; font-weight: 600; letter-spacing: .4px;
+      text-transform: uppercase;
+      color: var(--text-dim); border: 1px solid var(--border);
+      padding: 3px 9px; border-radius: 2px;
+      transition: all var(--trans);
+    }
+    .pp-tag:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* ── EXPERIENCE TIMELINE ──────────────────────────── */
+    .pp-timeline { display: flex; flex-direction: column; gap: 0; }
+    .pp-tl-item {
+      display: flex; gap: 16px;
+      padding: 0 0 20px; position: relative;
+    }
+    .pp-tl-item:last-child { padding-bottom: 0; }
+    .pp-tl-item:not(:last-child)::before {
+      content: '';
+      position: absolute; left: 15px; top: 34px;
+      width: 2px; height: calc(100% - 34px);
+      background: var(--border);
+    }
+    .pp-tl-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--card); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 12px; z-index: 1;
+    }
+    .pp-tl-dot.current { border-color: var(--orange); background: var(--orange-dim); }
+    .pp-tl-body { flex: 1; padding-top: 4px; }
+    .pp-tl-role { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .pp-tl-company { font-size: 12.5px; color: var(--orange); font-weight: 500; margin-bottom: 3px; }
+    .pp-tl-period { font-size: 11.5px; color: var(--text-dim); margin-bottom: 6px; }
+    .pp-tl-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── RATINGS SECTION ──────────────────────────────── */
+    .pp-reviews { display: flex; flex-direction: column; gap: 10px; }
+    .pp-review-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px 16px;
+    }
+    .pp-review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .pp-review-company { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; }
+    .pp-review-date { font-size: 11px; color: var(--text-dim); }
+    .pp-review-text { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+    .pp-review-obra { font-size: 11px; color: var(--text-dim); margin-top: 6px; display: flex; align-items: center; gap: 5px; }
+
+    /* Rating form */
+    .rating-form-box {
+      background: var(--card); border: 1px solid rgba(255,107,0,.2);
+      border-radius: var(--radius-md); padding: 16px;
+    }
+    .rating-form-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+    .star-picker { display: flex; gap: 6px; margin-bottom: 12px; cursor: pointer; }
+    .star-pick { font-size: 24px; color: var(--text-dim); transition: color var(--trans); }
+    .star-pick.active, .star-pick:hover ~ .star-pick { color: var(--text-dim); }
+    .star-picker:hover .star-pick { color: var(--orange); }
+    .star-pick:hover ~ .star-pick { color: var(--text-dim) !important; }
+
+    /* ── DOCUMENTS ASIDE ──────────────────────────────── */
+    .pp-docs { display: flex; flex-direction: column; gap: 6px; }
+    .pp-doc-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); transition: border-color var(--trans);
+    }
+    .pp-doc-row:hover { border-color: var(--border-light); }
+    .pp-doc-row.locked { opacity: .6; }
+    .pp-doc-icon { font-size: 18px; flex-shrink: 0; }
+    .pp-doc-info { flex: 1; }
+    .pp-doc-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .pp-doc-sub  { font-size: 11px; color: var(--text-dim); }
+    .pp-doc-action {
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+      padding: 4px 8px; border-radius: 2px; border: none;
+      cursor: pointer; font-family: inherit; transition: all var(--trans);
+    }
+    .pp-doc-action.available {
+      background: var(--orange-dim); color: var(--orange);
+      border: 1px solid rgba(255,107,0,.2);
+    }
+    .pp-doc-action.available:hover { background: var(--orange); color: #000; }
+    .pp-doc-action.locked { background: var(--card); color: var(--text-dim); border: 1px solid var(--border); cursor: default; }
+
+    /* ── ACTION SIDEBAR ───────────────────────────────── */
+    .pp-action-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 18px 18px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .pp-action-card.unlocked { border-color: rgba(255,107,0,.35); background: linear-gradient(160deg,rgba(255,107,0,.05),var(--surface)); }
+    .pp-credit-note {
+      font-size: 11px; color: var(--text-dim); text-align: center;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+
+    /* Credit action button — acciones 3,4,5,6 */
+    .pp-credit-action-btn {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 9px 12px;
+      cursor: pointer; width: 100%; font-family: inherit;
+      transition: all var(--trans);
+    }
+    .pp-credit-action-btn:hover { border-color: var(--orange); background: var(--orange-dim); }
+    .pp-credit-action-btn:hover .pca-credit { color: var(--orange); }
+    .pp-credit-action-btn.used { opacity: .6; cursor: default; }
+    .pp-credit-action-btn.used:hover { border-color: var(--border); background: var(--card); }
+    .pca-left { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 12.5px; font-weight: 500; }
+    .pca-left svg { flex-shrink: 0; color: var(--text-dim); }
+    .pca-credit { font-size: 10px; font-weight: 700; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; padding: 2px 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 2px; }
+
+    /* Disponibilidad result box */
+    .pp-avail-result {
+      background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
+      border-radius: var(--radius-md); padding: 12px 14px;
+      animation: fadeIn .3s ease;
+    }
+    .par-title { font-size: 11px; font-weight: 700; color: var(--green); letter-spacing: .5px; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .par-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+
+    /* Share / link */
+    .pp-share-row {
+      display: flex; gap: 6px; align-items: center;
+    }
+    .pp-share-link {
+      flex: 1; background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 6px 10px;
+      font-size: 11px; color: var(--text-dim); font-family: monospace;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    /* Back button */
+    .pp-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12.5px; color: var(--text-muted);
+      background: none; border: none; cursor: pointer;
+      margin-bottom: 16px; transition: color var(--trans);
+    }
+    .pp-back:hover { color: var(--text); }
+    .pp-back svg { width: 14px; height: 14px; }
+
+    /* ── RESPONSIVE ───────────────────────────────────── */
+    @media (max-width: 768px) {
+      .pp-body { grid-template-columns: 1fr; }
+      .pp-col-aside { position: static; }
+      .pp-avatar { width: 72px; height: 72px; font-size: 22px; }
+      .pp-cover__bg { height: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ TOPNAV ════════════════════════════════════════════ -->
+  <nav class="topnav">
+    <div class="topnav__inner">
+      <a class="topnav__brand" href="index.html">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M2 18h20v2H2z"/>
+            <path d="M12 4C8 4 5 8 5 12v6h14v-6c0-4-3-8-7-8z"/>
+            <line x1="12" y1="4" x2="12" y2="12"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </div>
+        <span class="brand-name">Constru<em>linker</em></span>
+      </a>
+      <div class="topnav__links">
+        <button class="nav-link" onclick="window.location.href='index.html?page=buscar'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          <span>Personal</span>
+        </button>
+        <button class="nav-link" onclick="window.location.href='index.html?page=creditos'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/></svg>
+          <span>Créditos</span>
+        </button>
+      </div>
+      <div class="topnav__credits" onclick="window.location.href='index.html?page=creditos'">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="credits-diamond"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+        <span id="creditsNav">10</span>
+        <span class="credits-label-nav">créditos</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══ PROFILE PAGE ══════════════════════════════════════ -->
+  <div class="profile-page" id="profilePage">
+    <!-- Inyectado por JS -->
+  </div>
+
+  <!-- ══ MODAL: LEAVE RATING ═══════════════════════════════ -->
+  <div class="modal-overlay" id="ratingModal" onclick="closeRatingModal(event)">
+    <div class="modal-box small">
+      <div class="modal-header">
+        <div class="modal-title">Dejar valoración</div>
+        <button class="modal-close" onclick="document.getElementById('ratingModal').classList.remove('active')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Valora el trabajo de este profesional en tu obra.</div>
+        <div class="star-picker" id="starPicker">
+          <span class="star-pick" data-val="1" onclick="setRating(1)">★</span>
+          <span class="star-pick" data-val="2" onclick="setRating(2)">★</span>
+          <span class="star-pick" data-val="3" onclick="setRating(3)">★</span>
+          <span class="star-pick" data-val="4" onclick="setRating(4)">★</span>
+          <span class="star-pick" data-val="5" onclick="setRating(5)">★</span>
+        </div>
+        <div class="field" style="margin-bottom:16px">
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted)">Comentario</label>
+          <textarea id="ratingText" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:inherit;font-size:13px;padding:10px 13px;outline:none;resize:vertical;min-height:80px;width:100%;margin-top:5px" placeholder="Describe la experiencia de trabajo con este profesional..."></textarea>
+        </div>
+        <div class="field" style="margin-bottom:16px">
+          <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted)">Obra / Proyecto</label>
+          <input type="text" id="ratingObra" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:inherit;font-size:13px;padding:10px 13px;outline:none;width:100%;margin-top:5px" placeholder="Ej: Torre Residencial Miraflores"/>
+        </div>
+        <button class="btn-orange w-full" onclick="submitRating()">Publicar valoración</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TOAST ═════════════════════════════════════════════ -->
+  <div class="toast" id="toastEl">
+    <div class="toast__icon" id="toastIcon"></div>
+    <div class="toast__body"><strong id="toastTitle"></strong><span id="toastSub"></span></div>
+  </div>
+
+  <script>
+  'use strict';
+
+  /* ── DATOS (espejo de app.js) ─────────────────────── */
+  const PROFESSIONALS = [
+    { id:1,  name:"Rafael Montoya",  specialty:"Ing. Civil Estructural",       category:"Técnicos",      exp:14, expLabel:"14 años exp.", location:"Miraflores, Lima",        availability:"available", tags:["BIM","ETABS","SAP2000","Concreto","AutoCAD"],         color:["#1A3A6E","#2A5A9E"], initials:"RM", phone:"+51 987 654 321", email:"r.montoya@constru.pe", whatsapp:"51987654321", about:"Ingeniero civil con 14 años de experiencia en diseño estructural de edificios multifamiliares y obras civiles en Lima. Especialista en modelado BIM y análisis sísmico bajo la norma E.030 del RNE." },
+    { id:2,  name:"Valeria Torres",  specialty:"Arquitecta Senior",             category:"Técnicos",      exp:9,  expLabel:"9 años exp.",  location:"San Isidro, Lima",        availability:"available", tags:["AutoCAD","Revit","LEED","3D Max","SketchUp"],          color:["#3A1A6E","#5A2A9E"], initials:"VT", phone:"+51 976 543 210", email:"v.torres@arq.pe",     whatsapp:"51976543210", about:"Arquitecta especializada en diseño residencial y comercial de alta gama. Certificada LEED AP y con experiencia en coordinación BIM de proyectos de hasta S/ 50MM." },
+    { id:3,  name:"Carlos Espinoza", specialty:"Maestro de Obra",              category:"Obra gruesa",   exp:18, expLabel:"18 años exp.", location:"Callao, Lima",            availability:"busy",      tags:["Encofrado","Concreto","Acero","Albañilería","Metrado"], color:["#1A5E2A","#2A8E3E"], initials:"CE", phone:"+51 965 432 109", email:"c.espinoza@obra.pe",  whatsapp:"51965432109", about:"Maestro de obra con 18 años en construcción de edificios y estructuras de concreto armado. Experiencia liderando frentes de hasta 40 trabajadores en Lima y provincias." },
+    { id:4,  name:"Sofía Quispe",    specialty:"Técnico de PRL / SSOMA",       category:"Técnicos",      exp:7,  expLabel:"7 años exp.",  location:"Surco, Lima",            availability:"available", tags:["SSOMA","ISO 45001","SCTR","IPERC","AST"],              color:["#6E3A1A","#9E5A2A"], initials:"SQ", phone:"+51 954 321 098", email:"s.quispe@safety.pe",  whatsapp:"51954321098", about:"Especialista en seguridad y salud ocupacional con experiencia en obras de edificación, minería y plantas industriales. Auditora interna certificada ISO 45001." },
+    { id:5,  name:"Diego Paredes",   specialty:"Residente de Obra",            category:"Técnicos",      exp:12, expLabel:"12 años exp.", location:"La Molina, Lima",        availability:"available", tags:["MS Project","Primavera P6","Lean","BIM","Costos"],     color:["#6E1A3A","#9E2A5A"], initials:"DP", phone:"+51 943 210 987", email:"d.paredes@obra.pe",   whatsapp:"51943210987", about:"Residente de obra con 12 años gestionando proyectos de edificación en Lima. Especializado en planificación Last Planner y control de costos con S10." },
+    { id:6,  name:"Lucía Benítez",   specialty:"Electricista Industrial",       category:"Instalaciones", exp:6,  expLabel:"6 años exp.",  location:"Jesús María, Lima",      availability:"limited",   tags:["Baja Tensión","IIEE","AutoCAD Elec.","Tableros","MT"], color:["#1A6E6E","#2A9E9E"], initials:"LB", phone:"+51 932 109 876", email:"l.benitez@elect.pe",  whatsapp:"51932109876", about:"Electricista certificada con dominio en instalaciones de baja y media tensión para edificios y centros comerciales. Habilitada por el Colegio de Ingenieros del Perú." },
+    { id:7,  name:"Marco Ríos",      specialty:"Oficial Albañil de Primera",   category:"Obra gruesa",   exp:16, expLabel:"16 años exp.", location:"Villa El Salvador, Lima", availability:"available", tags:["Muros","Pisos","Cerámicos","Tarrajeo","Caravista"],    color:["#5A3A1A","#8A5A2A"], initials:"MR", phone:"+51 921 098 765", email:"m.rios@albanil.pe",   whatsapp:"51921098765", about:"Oficial albañil de primera con 16 años de experiencia en obras de edificación en Lima. Especialista en trabajo fino y acabados de calidad certificados." },
+    { id:8,  name:"Ana Fuentes",     specialty:"Pintora de Acabados",          category:"Acabados",      exp:8,  expLabel:"8 años exp.",  location:"Barranco, Lima",         availability:"available", tags:["Pintura","Empaste","Estucado","Texturas","Latex"],     color:["#1A3A5E","#2A5A8E"], initials:"AF", phone:"+51 910 987 654", email:"a.fuentes@acab.pe",   whatsapp:"51910987654", about:"Especialista en pintura y acabados finos de interiores y exteriores. Experiencia en proyectos residenciales y hoteles de 4 y 5 estrellas en Lima Metropolitana." },
+    { id:9,  name:"Pedro Cárdenas",  specialty:"Operador de Grúa Torre",       category:"Maquinaria",    exp:11, expLabel:"11 años exp.", location:"Ate, Lima",              availability:"limited",   tags:["Grúa Torre","Grúa Móvil","LICONA","Rigger","OSHA"],   color:["#4E1A1A","#7E2A2A"], initials:"PC", phone:"+51 989 876 543", email:"p.cardenas@maq.pe",   whatsapp:"51989876543", about:"Operador certificado con licencia vigente MTC. 11 años operando grúa torre y móvil en obras de gran altura en Lima, con récord de cero accidentes." },
+    { id:10, name:"Rosa Mamani",     specialty:"Gasfitero / Instalaciones IISS",category:"Instalaciones",exp:9,  expLabel:"9 años exp.",  location:"SJM, Lima",              availability:"available", tags:["Agua fría","Agua caliente","Desagüe","Presión","IISS"],color:["#1A2A6E","#2A3A9E"], initials:"RM", phone:"+51 978 765 432", email:"r.mamani@sanit.pe",   whatsapp:"51978765432", about:"Gasfitero con 9 años en instalaciones sanitarias de edificaciones residenciales y comerciales en Lima. Experiencia en sistemas de agua fría, caliente y contraincendios." },
+    { id:11, name:"Jorge Huanca",    specialty:"Peón de Construcción",         category:"Auxiliares",    exp:3,  expLabel:"3 años exp.",  location:"SMP, Lima",              availability:"available", tags:["Demolición","Limpieza","Cargador","Apoyo general"],    color:["#2A4A2A","#3A6A3A"], initials:"JH", phone:"+51 967 654 321", email:"j.huanca@const.pe",   whatsapp:"51967654321", about:"Peón polivalente con disponibilidad inmediata. Experiencia en demoliciones, movimiento de materiales y apoyo general en obras de edificación en Lima Norte." },
+    { id:12, name:"Sandra Vargas",   specialty:"Ing. de Presupuestos",         category:"Técnicos",      exp:5,  expLabel:"5 años exp.",  location:"Magdalena, Lima",        availability:"limited",   tags:["S10","Excel Avanzado","APU","Metrados","Valorizaciones"],color:["#4A2A5A","#6A3A8A"],initials:"SV", phone:"+51 956 543 210", email:"s.vargas@presup.pe",  whatsapp:"51956543210", about:"Ingeniería civil especializada en control de costos y presupuestos de obras. Dominio avanzado de S10, metrados y análisis de precios unitarios para proyectos en Lima." },
+  ];
+
+  /* ── EXPERIENCIAS POR TRABAJADOR ──────────────────── */
+  const EXPERIENCE = {
+    1: [
+      { role:"Ing. Estructural Senior", company:"Estetica Constructores SAC", period:"2019 – Actualidad", desc:"Diseño estructural de torres residenciales de 15–20 pisos. Modelado BIM y coordinación multidisciplinaria.", current:true },
+      { role:"Ing. Calculista", company:"GPC Ingeniería y Construcción", period:"2015 – 2019", desc:"Cálculo y diseño de estructuras de concreto armado y acero para edificios comerciales.", current:false },
+      { role:"Ing. de Obra", company:"Construcciones del Norte", period:"2011 – 2015", desc:"Supervisión de estructuras y control de calidad en obras de edificación en Lima Norte.", current:false },
+    ],
+    2: [
+      { role:"Arquitecta Líder de Proyectos", company:"Valori Arquitectos", period:"2020 – Actualidad", desc:"Dirección de proyectos residenciales premium. Coordinación BIM y gestión de clientes.", current:true },
+      { role:"Arquitecta de Diseño", company:"Studio A&B", period:"2016 – 2020", desc:"Desarrollo de proyectos desde anteproyecto hasta expediente técnico.", current:false },
+    ],
+    3: [
+      { role:"Maestro General de Obra", company:"Buildex Contratistas", period:"2018 – Actualidad (no disp.)", desc:"Dirección de frentes de trabajo en torre de 18 pisos. Control de rendimientos y calidad.", current:true },
+      { role:"Encargado de Obra", company:"Alianza Constructores", period:"2012 – 2018", desc:"Supervisión directa de trabajos de albañilería y concreto en obras residenciales.", current:false },
+      { role:"Oficial Albañil de Primera", company:"Contratistas Unidos", period:"2006 – 2012", desc:"Trabajos de muros, techos y estructuras en obras de Lima Sur.", current:false },
+    ],
+    5: [
+      { role:"Residente de Obra", company:"Proyek Builders", period:"2019 – Actualidad", desc:"Gestión integral de edificio de 12 pisos. Planificación Last Planner, control de costos y cronograma.", current:true },
+      { role:"Asistente de Residente", company:"Torres del Sur SAC", period:"2013 – 2019", desc:"Apoyo en control de avance, metrados y coordinación con subcontratistas.", current:false },
+    ],
+  };
+
+  /* ── VALORACIONES POR TRABAJADOR ──────────────────── */
+  const REVIEWS_DATA = {
+    1: [
+      { company:"Constructora Arenas", rating:5, text:"Excelente profesional, entregó los planos estructurales antes del plazo. Muy comunicativo y preciso.", obra:"Torre Residencial Miraflores", date:"Feb 2025" },
+      { company:"Buildex Contratistas", rating:5, text:"Rafael es de los mejores estructuristas que hemos contratado. Domina BIM y su criterio técnico es impecable.", obra:"Centro Comercial Callao", date:"Oct 2024" },
+    ],
+    2: [
+      { company:"Inmobiliaria Vista", rating:5, text:"Trabajo impecable. Entendió el concepto desde el primer boceto y lo ejecutó con precisión.", obra:"Residencial Los Álamos", date:"Ene 2025" },
+    ],
+    3: [
+      { company:"Proyek Builders",     rating:4, text:"Carlos conoce la obra como pocos. Solo mejoraría la comunicación de avances diarios.", obra:"Edificio San Borja 340", date:"Mar 2025" },
+    ],
+    5: [
+      { company:"Constructora Arenas", rating:5, text:"Diego controla perfectamente el cronograma y los costos. Lo volvería a contratar sin pensarlo.", obra:"Torre Surco 12 pisos",  date:"Mar 2025" },
+      { company:"GPC Ingeniería",      rating:4, text:"Muy organizado. Implementó Last Planner en tiempo récord.", obra:"Almacén Industrial Lurín", date:"Dic 2024" },
+    ],
+  };
+
+  /* ── STATE ────────────────────────────────────────── */
+  let currentWorkerId = null;
+  let selectedRating  = 0;
+  let STATE = { credits: 10, unlocked: [] };
+
+  function loadState() {
+    try {
+      const s = JSON.parse(localStorage.getItem('construlinker_state') || '{}');
+      STATE.credits  = s.credits  ?? 10;
+      STATE.unlocked = s.unlocked ?? [];
+    } catch(e) {}
+  }
+  function saveState() {
+    try { localStorage.setItem('construlinker_state', JSON.stringify(STATE)); } catch(e) {}
+  }
+
+  /* ── INIT ─────────────────────────────────────────── */
+  function init() {
+    loadState();
+    document.getElementById('creditsNav').textContent = STATE.credits;
+
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id')) || 1;
+    currentWorkerId = id;
+
+    const p = PROFESSIONALS.find(x => x.id === id);
+    if (!p) { document.getElementById('profilePage').innerHTML = '<p style="color:var(--text-muted);padding:40px">Perfil no encontrado.</p>'; return; }
+    renderProfile(p);
+  }
+
+  /* ── RENDER PROFILE ───────────────────────────────── */
+  function renderProfile(p) {
+    const isUnlocked = STATE.unlocked.includes(p.id);
+    const grad = `background:linear-gradient(135deg,${p.color[0]},${p.color[1]})`;
+    const slug = p.name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+    const reviews = REVIEWS_DATA[p.id] || [];
+    const avgRating = reviews.length ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : null;
+    const experience = EXPERIENCE[p.id] || [];
+
+    const catCoverColors = {
+      'Obra gruesa':'linear-gradient(135deg,#1A1A0A,#2A2A12)','Acabados':'linear-gradient(135deg,#0A1A1A,#122A2A)',
+      'Instalaciones':'linear-gradient(135deg,#0A0A1A,#10102A)','Maquinaria':'linear-gradient(135deg,#1A0A0A,#2A1010)',
+      'Técnicos':'linear-gradient(135deg,#1A0A1A,#2A102A)','Auxiliares':'linear-gradient(135deg,#0A1A0A,#122A12)',
+    };
+    const coverBg = catCoverColors[p.category] || 'linear-gradient(135deg,#111,#1A1A1A)';
+
+    document.title = `${p.name} — Construlinker`;
+
+    document.getElementById('profilePage').innerHTML = `
+      <button class="pp-back" onclick="history.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15,18 9,12 15,6"/></svg>
+        Volver al directorio
+      </button>
+
+      <!-- Cover + header card -->
+      <div class="pp-header-card">
+        <div class="pp-cover">
+          <div class="pp-cover__bg" style="${coverBg}">
+            <div class="pp-cover__cat-label">${p.category}</div>
+          </div>
+        </div>
+
+        <div class="pp-avatar-row">
+          <div class="pp-avatar-wrap">
+            <div class="pp-avatar" style="${grad}">${p.initials}</div>
+            <div class="pp-online-dot ${p.availability}"></div>
+          </div>
+          <div class="pp-header-actions">
+            ${isUnlocked
+              ? `<button class="btn-orange" onclick="window.open('https://wa.me/${p.whatsapp}','_blank')">
+                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+                   WhatsApp
+                 </button>`
+              : `<button class="btn-orange" onclick="unlockAndContact(${p.id})">
+                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="13" height="13"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                   Desbloquear — 1 crédito
+                 </button>`}
+            <button class="btn-ghost" onclick="sendOffer(${p.id})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="13" height="13"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+              Oferta directa
+            </button>
+            <button class="btn-ghost" onclick="openRatingModal()">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+              Valorar
+            </button>
+          </div>
+        </div>
+
+        <div class="pp-name">${p.name}</div>
+        <div class="pp-specialty">${p.specialty}</div>
+        <div class="pp-meta-row">
+          <div class="pp-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>${p.expLabel}</div>
+          <div class="pp-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${p.location}</div>
+          <div class="pp-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>${p.category}</div>
+          <div class="pp-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            ${isUnlocked ? `<a href="mailto:${p.email}" style="color:var(--orange)">${p.email}</a>` : 'Email (bloqueado)'}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div class="pp-avail-badge ${p.availability}">
+            <div style="width:7px;height:7px;border-radius:50%;background:currentColor"></div>
+            ${{available:'Disponible',limited:'Disp. Limitada',busy:'No disponible'}[p.availability]}
+          </div>
+          ${avgRating ? `
+            <div class="pp-rating">
+              <div class="stars">${renderStars(parseFloat(avgRating))}</div>
+              <span class="pp-rating-val">${avgRating}</span>
+              <span class="pp-rating-count">(${reviews.length} valoracion${reviews.length!==1?'es':''})</span>
+            </div>` : '<span style="font-size:12px;color:var(--text-dim)">Sin valoraciones todavía</span>'}
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="pp-body">
+        <div class="pp-col-main">
+
+          <!-- Sobre el profesional -->
+          <div class="pp-card">
+            <div class="pp-card__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Sobre el profesional</div>
+            <p class="pp-about-text">${p.about}</p>
+          </div>
+
+          <!-- Habilidades -->
+          <div class="pp-card">
+            <div class="pp-card__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>Habilidades y herramientas</div>
+            <div class="pp-tags">${p.tags.map(t=>`<span class="pp-tag">${t}</span>`).join('')}</div>
+          </div>
+
+          <!-- Experiencia laboral -->
+          ${experience.length ? `
+          <div class="pp-card">
+            <div class="pp-card__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>Experiencia laboral</div>
+            <div class="pp-timeline">
+              ${experience.map(e=>`
+                <div class="pp-tl-item">
+                  <div class="pp-tl-dot ${e.current ? 'current' : ''}">${e.current ? '●' : '○'}</div>
+                  <div class="pp-tl-body">
+                    <div class="pp-tl-role">${e.role}</div>
+                    <div class="pp-tl-company">${e.company}</div>
+                    <div class="pp-tl-period">${e.period}</div>
+                    <div class="pp-tl-desc">${e.desc}</div>
+                  </div>
+                </div>`).join('')}
+            </div>
+          </div>` : ''}
+
+          <!-- Valoraciones -->
+          <div class="pp-card" id="reviewsSection">
+            <div class="pp-card__title"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>Valoraciones de empresas</div>
+            <div class="pp-reviews" id="reviewsList">
+              ${renderReviewsList(reviews)}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ASIDE -->
+        <div class="pp-col-aside">
+
+          <!-- Acción principal -->
+          <div class="pp-action-card ${isUnlocked ? 'unlocked' : ''}">
+            ${isUnlocked ? `
+              <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--orange);margin-bottom:4px">✓ PERFIL DESBLOQUEADO</div>
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Tienes acceso completo al contacto de este profesional.</div>
+              <button class="btn-orange w-full" onclick="window.open('https://wa.me/${p.whatsapp}','_blank')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+                Abrir WhatsApp
+              </button>
+              <button class="btn-ghost w-full" onclick="window.open('tel:${p.phone}')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="13" height="13"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.1 1.22 2 2 0 012.1.01h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L6.27 7.9a16 16 0 006.18 6.18l.98-.98a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                Llamar: ${p.phone}
+              </button>
+            ` : `
+              <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:6px">Desbloquear contacto</div>
+              <div style="font-size:12.5px;color:var(--text-muted);margin-bottom:14px;line-height:1.5">Accede al teléfono, WhatsApp y email de este profesional.</div>
+              <button class="btn-orange w-full" onclick="unlockAndContact(${p.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="13" height="13"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Desbloquear contacto — 1 crédito
+              </button>
+              <div class="pp-credit-note">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+                Tienes ${STATE.credits} crédito${STATE.credits!==1?'s':''}
+              </div>`}
+            <div style="height:1px;background:var(--border);margin:10px 0"></div>
+
+            <!-- Acción 3: Oferta directa -->
+            <button class="pp-credit-action-btn" onclick="sendOffer(${p.id})">
+              <div class="pca-left">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+                <span>Enviar oferta directa</span>
+              </div>
+              <span class="pca-credit">1 crédito</span>
+            </button>
+
+            <!-- Acción 4: Solicitar disponibilidad -->
+            <button class="pp-credit-action-btn" id="btnAvail-${p.id}" onclick="requestAvailability(${p.id})">
+              <div class="pca-left">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                <span id="availBtnText-${p.id}">Solicitar disponibilidad</span>
+              </div>
+              <span class="pca-credit">1 crédito</span>
+            </button>
+
+            <!-- Acción 6: Verificación rápida de documentación -->
+            <button class="pp-credit-action-btn" id="btnVerif-${p.id}" onclick="verifyDocs(${p.id})">
+              <div class="pca-left">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+                <span id="verifBtnText-${p.id}">Verificación rápida de docs</span>
+              </div>
+              <span class="pca-credit">1 crédito</span>
+            </button>
+          </div>
+
+          <!-- Disponibilidad consultada -->
+          <div class="pp-avail-result" id="availResult-${p.id}" style="display:none">
+            <div class="par-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+              Disponibilidad consultada
+            </div>
+            <div class="par-body" id="availResultBody-${p.id}"></div>
+          </div>
+
+          <!-- Documentos -->
+          <div class="pp-card">
+            <div class="pp-card__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Documentos</div>
+            <div class="pp-docs">
+              ${renderDocRow('📄','Currículum Vitae','PDF · Actualizado 2025', true, isUnlocked, p.id,'cv')}
+              ${renderDocRow('🦺','Certificado PRL','Prevención de Riesgos Laborales', true, isUnlocked, p.id,'prl')}
+              ${renderDocRow('🏅','Certificados','Cursos y titulaciones', p.id <= 6, isUnlocked, p.id,'cert')}
+              ${renderDocRow('🪪','DNI / NIE','Documento de identidad', false, isUnlocked, p.id,'dni')}
+            </div>
+          </div>
+
+          <!-- Enlace perfil -->
+          <div class="pp-card" style="padding:14px 16px">
+            <div class="pp-card__title" style="margin-bottom:10px">Compartir perfil</div>
+            <div class="pp-share-row">
+              <div class="pp-share-link">construlinker.pe/${slug}</div>
+              <button class="btn-orange sm" onclick="copyLink('construlinker.pe/${slug}')">Copiar</button>
+            </div>
+          </div>
+
+        </div>
+      </div>`;
+  }
+
+  /* ── HELPERS DE RENDER ────────────────────────────── */
+  function renderStars(rating) {
+    return [1,2,3,4,5].map(i => {
+      if (i <= Math.floor(rating)) return `<span class="star full">★</span>`;
+      if (i - rating < 1 && i - rating > 0) return `<span class="star half">★</span>`;
+      return `<span class="star empty">☆</span>`;
+    }).join('');
+  }
+
+  function renderReviewsList(reviews) {
+    if (!reviews.length) return `<div style="font-size:12.5px;color:var(--text-dim);padding:12px 0">Aún no hay valoraciones. Sé el primero en valorar a este profesional.</div>`;
+    return reviews.map(r => `
+      <div class="pp-review-card">
+        <div class="pp-review-header">
+          <div class="pp-review-company">${r.company}</div>
+          <div class="stars">${renderStars(r.rating)}</div>
+          <div class="pp-review-date">${r.date}</div>
+        </div>
+        <div class="pp-review-text">"${r.text}"</div>
+        <div class="pp-review-obra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="11" height="11"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>${r.obra}</div>
+      </div>`).join('');
+  }
+
+  function renderDocRow(icon, name, desc, hasDoc, isUnlocked, pid, docId) {
+    if (!hasDoc) return `<div class="pp-doc-row locked"><div class="pp-doc-icon">${icon}</div><div class="pp-doc-info"><div class="pp-doc-name">${name}</div><div class="pp-doc-sub">No disponible</div></div></div>`;
+    if (!isUnlocked) return `
+      <div class="pp-doc-row">
+        <div class="pp-doc-icon">${icon}</div>
+        <div class="pp-doc-info"><div class="pp-doc-name">${name}</div><div class="pp-doc-sub">${desc}</div></div>
+        <button class="pp-doc-action locked" onclick="downloadDoc(${pid},'${docId}')">🔒 1 crédito</button>
+      </div>`;
+    return `
+      <div class="pp-doc-row">
+        <div class="pp-doc-icon">${icon}</div>
+        <div class="pp-doc-info"><div class="pp-doc-name">${name}</div><div class="pp-doc-sub">${desc}</div></div>
+        <button class="pp-doc-action available" onclick="downloadDoc(${pid},'${docId}')">⬇ Descargar</button>
+      </div>`;
+  }
+
+  /* ── ACCIONES ─────────────────────────────────────── */
+  function unlockAndContact(id) {
+    if (STATE.credits <= 0) { showToast('Sin créditos','Compra un pack para continuar.', false); return; }
+    STATE.credits--;
+    STATE.unlocked.push(id);
+    saveState();
+    document.getElementById('creditsNav').textContent = STATE.credits;
+    const p = PROFESSIONALS.find(x=>x.id===id);
+    showToast(`${p.name} desbloqueado`, `Contacto visible · ${STATE.credits} crédito${STATE.credits!==1?'s':''} restante${STATE.credits!==1?'s':''}`);
+    renderProfile(p);
+  }
+
+  function sendOffer(id) {
+    if (STATE.credits <= 0) { showToast('Sin créditos','Compra un pack para enviar ofertas.', false); return; }
+    STATE.credits--;
+    saveState();
+    document.getElementById('creditsNav').textContent = STATE.credits;
+    const p = PROFESSIONALS.find(x=>x.id===id);
+    showToast('Oferta enviada', `${p.name} ha sido notificado de tu propuesta.`);
+  }
+
+  /* ── ACCIÓN 4: Solicitar disponibilidad ───────────────── */
+  function requestAvailability(id) {
+    const p = PROFESSIONALS.find(x=>x.id===id);
+    if (!p) return;
+    if (STATE.credits <= 0) { showToast('Sin créditos','Necesitas 1 crédito para consultar la disponibilidad del trabajador. Compra un pack para seguir.', false); return; }
+
+    STATE.credits--;
+    saveState();
+    document.getElementById('creditsNav').textContent = STATE.credits;
+
+    // Marcar botón como usado
+    const btn = document.getElementById('btnAvail-' + id);
+    const txt = document.getElementById('availBtnText-' + id);
+    if (btn) { btn.classList.add('used'); btn.disabled = true; }
+    if (txt) txt.textContent = 'Disponibilidad consultada ✓';
+
+    // Mostrar resultado
+    const resultBox  = document.getElementById('availResult-' + id);
+    const resultBody = document.getElementById('availResultBody-' + id);
+    const availMsg = {
+      available: `✅ <strong style="color:var(--text)">${p.name}</strong> está <strong style="color:var(--green)">disponible</strong> y puede incorporarse de forma inmediata o en menos de 1 semana.`,
+      limited:   `🟡 <strong style="color:var(--text)">${p.name}</strong> tiene <strong style="color:var(--yellow)">disponibilidad limitada</strong>. Está trabajando pero evalúa nuevas propuestas. Contacta para confirmar fecha de inicio.`,
+      busy:      `🔴 <strong style="color:var(--text)">${p.name}</strong> está <strong style="color:var(--red)">no disponible</strong> actualmente. Tiene contrato a jornada completa. Puedes enviarle una oferta para cuando finalice.`,
+    };
+    if (resultBox)  resultBox.style.display = 'block';
+    if (resultBody) resultBody.innerHTML = availMsg[p.availability] || availMsg.available;
+
+    showToast('Disponibilidad consultada', `${p.name} — ${p.availability === 'available' ? 'Puede incorporarse de inmediato' : p.availability === 'limited' ? 'Disponibilidad parcial' : 'No disponible actualmente'}`);
+  }
+
+  /* ── ACCIÓN 6: Verificación rápida de documentación ────── */
+  function verifyDocs(id) {
+    const p = PROFESSIONALS.find(x=>x.id===id);
+    if (!p) return;
+    if (STATE.credits <= 0) { showToast('Sin créditos','Para verificar la documentación de este candidato necesitas 1 crédito. Adquiere un pack y continúa.', false); return; }
+
+    STATE.credits--;
+    saveState();
+    document.getElementById('creditsNav').textContent = STATE.credits;
+
+    const btn = document.getElementById('btnVerif-' + id);
+    const txt = document.getElementById('verifBtnText-' + id);
+    if (btn) { btn.classList.add('used'); btn.disabled = true; }
+    if (txt) txt.textContent = 'Documentación verificada ✓';
+
+    showToast('Documentación verificada', `Los documentos de ${p.name} han sido revisados y son válidos.`);
+  }
+
+  function downloadDoc(id, docId) {
+    const isUnlocked = STATE.unlocked.includes(id);
+    if (!isUnlocked) {
+      if (STATE.credits <= 0) { showToast('Sin créditos','Compra un pack para descargar documentos.', false); return; }
+      STATE.credits--;
+      STATE.unlocked.push(id);
+      saveState();
+      document.getElementById('creditsNav').textContent = STATE.credits;
+      const p = PROFESSIONALS.find(x=>x.id===id);
+      showToast('Documento desbloqueado', `Acceso a documentos de ${p.name} activado.`);
+      renderProfile(p);
+    } else {
+      showToast('Descargando…','El archivo se descargará en instantes.');
+    }
+  }
+
+  function copyLink(url) {
+    try { navigator.clipboard.writeText('https://' + url); } catch(e){}
+    showToast('Enlace copiado', url);
+  }
+
+  /* ── RATING MODAL ─────────────────────────────────── */
+  function openRatingModal() { document.getElementById('ratingModal').classList.add('active'); }
+  function closeRatingModal(e) { if (e.target === document.getElementById('ratingModal')) document.getElementById('ratingModal').classList.remove('active'); }
+
+  function setRating(val) {
+    selectedRating = val;
+    document.querySelectorAll('.star-pick').forEach(s => {
+      s.style.color = parseInt(s.dataset.val) <= val ? 'var(--orange)' : 'var(--text-dim)';
+    });
+  }
+
+  function submitRating() {
+    if (!selectedRating) { showToast('Selecciona una puntuación','Haz clic en las estrellas.', false); return; }
+    const text = document.getElementById('ratingText').value.trim();
+    const obra = document.getElementById('ratingObra').value.trim();
+    if (!text) { showToast('Escribe un comentario','El comentario es obligatorio.', false); return; }
+
+    const newReview = { company:'Constructora Arenas', rating:selectedRating, text, obra:obra||'Obra sin especificar', date:'Ahora' };
+    if (!REVIEWS_DATA[currentWorkerId]) REVIEWS_DATA[currentWorkerId] = [];
+    REVIEWS_DATA[currentWorkerId].unshift(newReview);
+
+    document.getElementById('ratingModal').classList.remove('active');
+    document.getElementById('ratingText').value = '';
+    document.getElementById('ratingObra').value = '';
+    selectedRating = 0;
+    document.querySelectorAll('.star-pick').forEach(s => s.style.color = '');
+
+    const p = PROFESSIONALS.find(x=>x.id===currentWorkerId);
+    const reviews = REVIEWS_DATA[currentWorkerId];
+    document.getElementById('reviewsList').innerHTML = renderReviewsList(reviews);
+    showToast('Valoración publicada','Gracias por tu feedback.');
+  }
+
+  /* ── TOAST ────────────────────────────────────────── */
+  let toastTimer;
+  function showToast(title, sub, ok=true) {
+    const el = document.getElementById('toastEl');
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastSub').textContent   = sub;
+    document.getElementById('toastIcon').innerHTML    = ok
+      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><polyline points="20,6 9,17 4,12"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>`;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+  }
+
+  document.addEventListener('keydown', e => { if(e.key==='Escape') document.getElementById('ratingModal').classList.remove('active'); });
+  document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

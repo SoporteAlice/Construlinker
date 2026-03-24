@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Construlinker — Acceso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){ try{ var s=JSON.parse(localStorage.getItem('cl_session')||'{}'); if(s.loggedIn) window.location.replace('index.html'); }catch(e){} })();
+  </script>
+  <style>
+    :root{ --bg:#0A0A0B; --sf:#111113; --card:#18181A; --br:#252528; --brl:#333337; --tx:#EBEBEB; --tm:#888890; --td:#44444A; --or:#FF6B00; --ord:rgba(255,107,0,.1); --gn:#22C55E; --rd:#EF4444; --ra:3px; --rm:6px; --rl:10px; --tr:.18s cubic-bezier(.4,0,.2,1); }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased}
+    .shell{display:grid;grid-template-columns:1fr 480px;min-height:100vh}
+
+    /* LEFT BRAND */
+    .brand{background:var(--sf);border-right:1px solid var(--br);padding:44px 52px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+    .brand::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--br) 1px,transparent 1px),linear-gradient(90deg,var(--br) 1px,transparent 1px);background-size:48px 48px;opacity:.4}
+    .brand::after{content:'';position:absolute;bottom:-100px;left:-80px;width:520px;height:520px;background:radial-gradient(ellipse,rgba(255,107,0,.09),transparent 65%);pointer-events:none}
+    .brand-inner{position:relative;z-index:1;flex:1;display:flex;flex-direction:column}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:60px}
+    .logo-icon{width:36px;height:36px;background:var(--or);border-radius:var(--ra);display:flex;align-items:center;justify-content:center}
+    .logo-icon svg{width:20px;height:20px;color:#000}
+    .logo-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--tx)}
+    .logo-name em{font-style:normal;color:var(--or)}
+    .brand h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(34px,3.5vw,52px);font-weight:800;letter-spacing:-.5px;line-height:1;color:var(--tx);margin-bottom:16px}
+    .brand h1 span{color:var(--or)}
+    .brand p{font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:40px;max-width:360px}
+    .proofs{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+    .proof{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tm)}
+    .proof-dot{width:7px;height:7px;border-radius:50%;background:var(--or);flex-shrink:0}
+
+    /* RIGHT FORM */
+    .form-panel{display:flex;align-items:center;justify-content:center;padding:40px 48px;overflow-y:auto}
+    .form-inner{width:100%;max-width:380px}
+
+    /* STEPS */
+    .step{display:none}
+    .step.on{display:block;animation:si .22s ease}
+    @keyframes si{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .step-ttl{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--tx);margin-bottom:4px}
+    .step-sub{font-size:13px;color:var(--tm);margin-bottom:22px}
+
+    /* ROLE CARDS */
+    .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+    .rc{background:var(--card);border:2px solid var(--br);border-radius:var(--rm);padding:22px 14px;text-align:center;cursor:pointer;transition:all var(--tr);display:flex;flex-direction:column;align-items:center;gap:8px}
+    .rc:hover{border-color:var(--brl)}
+    .rc.sel{border-color:var(--or);background:var(--ord)}
+    .rc-icon{font-size:32px}
+    .rc-title{font-size:14px;font-weight:700;color:var(--tx)}
+    .rc-desc{font-size:11px;color:var(--tm);line-height:1.4}
+
+    /* BUTTONS */
+    .btn-pr{width:100%;height:44px;background:var(--or);color:#000;border:none;border-radius:var(--ra);font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background var(--tr)}
+    .btn-pr:hover{background:#FF8533}
+    .btn-pr:disabled{opacity:.4;pointer-events:none}
+    .btn-back{background:none;border:none;font-size:12.5px;color:var(--tm);cursor:pointer;display:flex;align-items:center;gap:5px;margin-bottom:14px;font-family:inherit;transition:color var(--tr);padding:0}
+    .btn-back:hover{color:var(--tx)}
+    .btn-demo{width:100%;height:36px;background:var(--card);color:var(--tm);border:1px solid var(--br);border-radius:var(--ra);font-size:12.5px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .18s}
+    .btn-demo:hover{border-color:var(--brl);color:var(--tx)}
+    .divider{display:flex;align-items:center;gap:10px;margin:14px 0;font-size:11px;color:var(--td)}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--br)}
+
+    /* ROLE PILL */
+    .pill{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--br);border-radius:var(--rm);padding:10px 14px;margin-bottom:16px}
+    .pill-icon{font-size:20px}
+    .pill-name{font-size:13px;font-weight:700;color:var(--tx);flex:1}
+    .pill-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:2px;background:var(--ord);color:var(--or);border:1px solid rgba(255,107,0,.2)}
+
+    /* TABS */
+    .tabs{display:flex;background:var(--card);border:1px solid var(--br);border-radius:var(--rm);padding:3px;margin-bottom:20px}
+    .tab{flex:1;height:34px;background:none;border:none;color:var(--tm);font-size:13px;font-weight:600;border-radius:var(--ra);cursor:pointer;transition:all var(--tr);font-family:inherit}
+    .tab.on{background:var(--or);color:#000}
+
+    /* FIELDS */
+    .field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+    .field label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--tm)}
+    .field input,.field select{background:var(--card);border:1px solid var(--br);border-radius:var(--ra);color:var(--tx);font-family:inherit;font-size:13.5px;padding:10px 13px;outline:none;width:100%;transition:border-color var(--tr)}
+    .field input:focus,.field select:focus{border-color:var(--or)}
+    .field input::placeholder{color:var(--td)}
+    .field select option{background:var(--sf)}
+    .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .err{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:var(--ra);padding:10px 13px;font-size:12.5px;color:var(--rd);margin-bottom:12px;display:none}
+    .err.on{display:block}
+    .switch-link{text-align:center;font-size:12.5px;color:var(--td);margin-top:12px}
+    .switch-link a{color:var(--or);cursor:pointer}
+
+    @media(max-width:860px){.shell{grid-template-columns:1fr}.brand{display:none}.form-panel{padding:40px 24px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- BRAND -->
+  <div class="brand">
+    <div class="brand-inner">
+      <a class="logo" href="landing.html">
+        <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 18h20v2H2z"/><path d="M12 4C8 4 5 8 5 12v6h14v-6c0-4-3-8-7-8z"/><line x1="12" y1="4" x2="12" y2="12"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        <span class="logo-name">Constru<em>linker</em></span>
+      </a>
+      <h1>El personal<br>que necesitas,<br><span>hoy mismo.</span></h1>
+      <p>La red élite del sector construcción en Perú. Conecta empresas con profesionales verificados de todos los oficios.</p>
+      <div class="proofs">
+        <div class="proof"><div class="proof-dot"></div>614+ profesionales activos en Lima y provincias</div>
+        <div class="proof"><div class="proof-dot"></div>Contacto directo vía WhatsApp con 1 crédito</div>
+        <div class="proof"><div class="proof-dot"></div>CV y certificado PRL descargables</div>
+        <div class="proof"><div class="proof-dot"></div>Registro 100% gratuito para trabajadores</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-panel">
+    <div class="form-inner">
+
+      <!-- PASO 1: Selecciona tu rol -->
+      <div class="step on" id="s1">
+        <div class="step-ttl">¿Cómo quieres acceder?</div>
+        <div class="step-sub">Selecciona tu perfil. La plataforma se adaptará a ti.</div>
+        <div class="role-grid">
+          <div class="rc" id="rc-emp" onclick="pick('empresa')">
+            <div class="rc-icon">🏗️</div>
+            <div class="rc-title">Soy Empresa</div>
+            <div class="rc-desc">Busco personal especializado para mis obras</div>
+          </div>
+          <div class="rc" id="rc-trab" onclick="pick('trabajador')">
+            <div class="rc-icon">👷</div>
+            <div class="rc-title">Soy Trabajador</div>
+            <div class="rc-desc">Busco empleo en el sector construcción</div>
+          </div>
+        </div>
+        <button class="btn-pr" id="btn-next" disabled onclick="goS2()">
+          Continuar
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14"><polyline points="9,18 15,12 9,6"/></svg>
+        </button>
+        <div class="divider">o</div>
+        <button class="btn-demo" onclick="demo('empresa')" style="margin-bottom:6px">Demo como empresa →</button>
+        <button class="btn-demo" onclick="demo('trabajador')">Demo como trabajador →</button>
+      </div>
+
+      <!-- PASO 2: Login / Registro -->
+      <div class="step" id="s2">
+        <button class="btn-back" onclick="goS1()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><polyline points="15,18 9,12 15,6"/></svg>
+          Cambiar tipo de cuenta
+        </button>
+        <div class="pill">
+          <span class="pill-icon" id="p-icon"></span>
+          <span class="pill-name" id="p-name"></span>
+          <span class="pill-badge" id="p-badge"></span>
+        </div>
+        <div class="tabs">
+          <button class="tab on" id="t-login"  onclick="mode('login')">Iniciar sesión</button>
+          <button class="tab"    id="t-reg"    onclick="mode('reg')">Registrarse gratis</button>
+        </div>
+        <div class="err" id="err"></div>
+
+        <!-- LOGIN -->
+        <div id="f-login">
+          <div class="field"><label>Email</label><input type="email" id="l-email" placeholder="tu@email.com"/></div>
+          <div class="field"><label>Contraseña</label><input type="password" id="l-pass" placeholder="Tu contraseña"/></div>
+          <button class="btn-pr" onclick="doLogin()">Acceder a mi panel <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><polyline points="9,18 15,12 9,6"/></svg></button>
+          <div class="switch-link">¿No tienes cuenta? <a onclick="mode('reg')">Regístrate gratis</a></div>
+        </div>
+
+        <!-- REG EMPRESA -->
+        <div id="f-reg-emp" style="display:none">
+          <div class="fr">
+            <div class="field"><label>Nombre empresa *</label><input type="text" id="re-nom" placeholder="Constructora XYZ"/></div>
+            <div class="field"><label>RUC</label><input type="text" id="re-ruc" placeholder="20XXXXXXXX"/></div>
+          </div>
+          <div class="field"><label>Tipo de empresa</label>
+            <select id="re-tipo"><option>Constructora general</option><option>Subcontrata</option><option>Reformista / autónomo</option><option>Promotora inmobiliaria</option><option>Instaladora</option><option>Empresa de servicios</option></select>
+          </div>
+          <div class="field"><label>Ubicación principal</label><input type="text" id="re-ubic" placeholder="San Isidro, Lima"/></div>
+          <div class="field"><label>Email *</label><input type="email" id="re-email" placeholder="contacto@empresa.com"/></div>
+          <div class="fr">
+            <div class="field"><label>Contraseña *</label><input type="password" id="re-pass" placeholder="Mín. 8 caracteres"/></div>
+            <div class="field"><label>Teléfono</label><input type="tel" id="re-phone" placeholder="+51 9XX..."/></div>
+          </div>
+          <button class="btn-pr" onclick="doRegEmp()">Crear cuenta de empresa <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><polyline points="20,6 9,17 4,12"/></svg></button>
+          <div class="switch-link">¿Ya tienes cuenta? <a onclick="mode('login')">Inicia sesión</a></div>
+        </div>
+
+        <!-- REG TRABAJADOR -->
+        <div id="f-reg-trab" style="display:none">
+          <div class="fr">
+            <div class="field"><label>Nombre *</label><input type="text" id="rt-nom" placeholder="Juan"/></div>
+            <div class="field"><label>Apellido *</label><input type="text" id="rt-ap" placeholder="Gómez"/></div>
+          </div>
+          <div class="field"><label>Especialidad / Oficio *</label><input type="text" id="rt-esp" placeholder="Ej: Electricista industrial"/></div>
+          <div class="fr">
+            <div class="field"><label>Categoría</label>
+              <select id="rt-cat"><option>Obra gruesa</option><option>Acabados</option><option>Instalaciones</option><option>Maquinaria</option><option>Técnicos</option><option>Auxiliares</option></select>
+            </div>
+            <div class="field"><label>Experiencia</label>
+              <select id="rt-exp"><option value="1">Menos de 1 año</option><option value="2">1–2 años</option><option value="3">3–5 años</option><option value="6">6–9 años</option><option value="10">10+ años</option></select>
+            </div>
+          </div>
+          <div class="field"><label>Ubicación</label><input type="text" id="rt-ubic" placeholder="Ej: Callao, Lima"/></div>
+          <div class="field"><label>Email *</label><input type="email" id="rt-email" placeholder="tu@email.com"/></div>
+          <div class="fr">
+            <div class="field"><label>Contraseña *</label><input type="password" id="rt-pass" placeholder="Mín. 8 caracteres"/></div>
+            <div class="field"><label>WhatsApp</label><input type="tel" id="rt-phone" placeholder="+51 9XX..."/></div>
+          </div>
+          <button class="btn-pr" onclick="doRegTrab()">Crear perfil profesional gratis <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><polyline points="20,6 9,17 4,12"/></svg></button>
+          <div class="switch-link">¿Ya tienes cuenta? <a onclick="mode('login')">Inicia sesión</a></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+let ROL = null, MODE = 'login';
+const g = id => document.getElementById(id);
+const v = id => (g(id)?.value||'').trim();
+const em = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+function err(m){ g('err').textContent=m; g('err').classList.add('on'); }
+function noErr(){ g('err').classList.remove('on'); }
+function sess(s){ try{ localStorage.setItem('cl_session',JSON.stringify(s)); }catch(e){} }
+
+function pick(r){
+  ROL=r;
+  g('rc-emp').classList.toggle('sel', r==='empresa');
+  g('rc-trab').classList.toggle('sel', r==='trabajador');
+  g('btn-next').disabled=false;
+}
+
+function goS2(){
+  if(!ROL) return;
+  g('s1').classList.remove('on'); g('s2').classList.add('on');
+  g('p-icon').textContent = ROL==='empresa' ? '🏗️' : '👷';
+  g('p-name').textContent = ROL==='empresa' ? 'Empresa / Contratista' : 'Profesional de obra';
+  g('p-badge').textContent= ROL==='empresa' ? 'EMPRESA' : 'TRABAJADOR';
+  mode('login');
+}
+
+function goS1(){
+  g('s2').classList.remove('on'); g('s1').classList.add('on'); noErr();
+}
+
+function mode(m){
+  MODE=m;
+  g('t-login').classList.toggle('on', m==='login');
+  g('t-reg').classList.toggle('on', m==='reg');
+  g('f-login').style.display           = m==='login' ? '' : 'none';
+  g('f-reg-emp').style.display         = (m==='reg' && ROL==='empresa')    ? '' : 'none';
+  g('f-reg-trab').style.display        = (m==='reg' && ROL==='trabajador') ? '' : 'none';
+  noErr();
+}
+
+function doLogin(){
+  const email=v('l-email'), pass=v('l-pass');
+  if(!email||!pass){ err('Introduce tu email y contraseña.'); return; }
+  if(!em(email)){ err('El email no es válido.'); return; }
+  sess({ type:ROL||'empresa', email, loggedIn:true });
+  window.location.href='index.html';
+}
+
+function doRegEmp(){
+  const nom=v('re-nom'), email=v('re-email'), pass=v('re-pass');
+  if(!nom){ err('El nombre de empresa es obligatorio.'); return; }
+  if(!email||!em(email)){ err('Email no válido.'); return; }
+  if(!pass||pass.length<8){ err('Contraseña mín. 8 caracteres.'); return; }
+  try{ localStorage.setItem('cl_empresa', JSON.stringify({
+    nombre:nom, ruc:v('re-ruc'), tipo:g('re-tipo').value,
+    ubicacion:v('re-ubic'), email, telefono:v('re-phone'),
+    registeredAt:new Date().toISOString()
+  })); }catch(e){}
+  sess({ type:'empresa', email, loggedIn:true });
+  window.location.href='index.html';
+}
+
+function doRegTrab(){
+  const nom=v('rt-nom'), ap=v('rt-ap'), esp=v('rt-esp'), email=v('rt-email'), pass=v('rt-pass');
+  if(!nom||!ap){ err('Nombre y apellido obligatorios.'); return; }
+  if(!esp){ err('Indica tu especialidad.'); return; }
+  if(!email||!em(email)){ err('Email no válido.'); return; }
+  if(!pass||pass.length<8){ err('Contraseña mín. 8 caracteres.'); return; }
+  const phone=v('rt-phone');
+  try{ localStorage.setItem('cl_worker', JSON.stringify({ profile:{
+    id:Date.now(), name:`${nom} ${ap}`, specialty:esp,
+    category:g('rt-cat').value, exp:parseInt(g('rt-exp').value)||1,
+    expLabel:g('rt-exp').options[g('rt-exp').selectedIndex].text,
+    location:v('rt-ubic')||'Lima, Perú',
+    phone, email, whatsapp:phone.replace(/\D/g,''),
+    availability:'available', tags:[], about:'',
+    docs:{cv:false,prl:false,cert:false,dni:false},
+    viewedBy:[], offers:[],
+    stats:{views:0,offers:0,contacts:0,docsDownloaded:0},
+    isWorker:true, registeredAt:new Date().toISOString()
+  }})); }catch(e){}
+  sess({ type:'trabajador', email, loggedIn:true });
+  window.location.href='index.html';
+}
+
+function demo(r){
+  sess({ type:r, demo:true, loggedIn:true });
+  window.location.href='index.html';
+}
+
+// URL params pre-fill
+const p=new URLSearchParams(location.search);
+const tp=p.get('type'), md=p.get('mode');
+if(tp){ pick(tp); }
+if(tp&&md==='register'){ goS2(); setTimeout(()=>mode('reg'),30); }
+
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Enter') return;
+  if(g('s2').classList.contains('on')){
+    if(MODE==='login') doLogin();
+    else if(ROL==='empresa') doRegEmp();
+    else doRegTrab();
+  }
+});
+</script>
+</body>
+</html>

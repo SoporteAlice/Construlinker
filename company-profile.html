@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfil Empresa — Construlinker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    body { overflow-y: auto; }
+
+    .cp-page { max-width: 960px; margin: 0 auto; padding: calc(var(--nav-h) + 28px) 20px 60px; }
+
+    /* Cover */
+    .cp-cover {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); overflow: hidden; margin-bottom: 16px;
+    }
+    .cp-cover__bg {
+      height: 140px;
+      background: linear-gradient(135deg, #1A0A1A 0%, #0A0A1A 40%, #1A0A0A 100%);
+      position: relative; overflow: hidden;
+    }
+    .cp-cover__bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 14px, rgba(255,107,0,.03) 14px, rgba(255,107,0,.03) 15px);
+    }
+    .cp-cover__body {
+      padding: 0 28px 24px;
+      display: flex; align-items: flex-end; gap: 18px;
+      margin-top: -40px; flex-wrap: wrap;
+    }
+    .cp-logo {
+      width: 80px; height: 80px; border-radius: var(--radius-md);
+      border: 3px solid var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 26px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .cp-info { flex: 1; min-width: 200px; }
+    .cp-name { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -.3px; color: var(--text); margin-bottom: 3px; }
+    .cp-type { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+    .cp-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-muted); }
+    .cp-meta-item { display: flex; align-items: center; gap: 5px; }
+    .cp-meta-item svg { width: 12px; height: 12px; color: var(--text-dim); }
+    .cp-actions { display: flex; gap: 8px; align-self: flex-end; }
+
+    /* Verified badge */
+    .cp-verified {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 700; letter-spacing: .5px;
+      text-transform: uppercase;
+      background: rgba(34,197,94,.1); color: var(--green);
+      border: 1px solid rgba(34,197,94,.2);
+      padding: 3px 8px; border-radius: 3px; margin-top: 6px;
+    }
+
+    /* Body layout */
+    .cp-body { display: grid; grid-template-columns: 1fr 280px; gap: 16px; align-items: start; }
+    .cp-col-main { display: flex; flex-direction: column; gap: 12px; }
+    .cp-col-aside { display: flex; flex-direction: column; gap: 12px; position: sticky; top: calc(var(--nav-h) + 20px); }
+
+    /* Cards */
+    .cp-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 18px 20px;
+    }
+    .cp-card__title {
+      font-size: 12px; font-weight: 700; letter-spacing: .8px;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 12px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cp-card__title svg { color: var(--orange); }
+    .cp-about { font-size: 13.5px; color: var(--text-muted); line-height: 1.7; }
+
+    /* Stats */
+    .cp-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    .cp-stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 10px; text-align: center; }
+    .cp-stat__n { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 3px; }
+    .cp-stat__l { font-size: 10px; color: var(--text-dim); }
+
+    /* Ofertas activas */
+    .cp-oferta {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 14px;
+      margin-bottom: 8px; transition: border-color var(--trans);
+    }
+    .cp-oferta:last-child { margin-bottom: 0; }
+    .cp-oferta:hover { border-color: var(--border-light); }
+    .cp-oferta.urgent { border-color: rgba(255,107,0,.25); }
+    .cp-of-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .cp-of-meta  { font-size: 11.5px; color: var(--text-muted); margin-bottom: 7px; }
+    .cp-of-tags  { display: flex; gap: 4px; flex-wrap: wrap; }
+    .cp-of-tag   { font-size: 10px; font-weight: 500; color: var(--text-dim); border: 1px solid var(--border); padding: 2px 6px; border-radius: 2px; }
+
+    /* Rating empresa */
+    .cp-rating-summary {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px; background: var(--card); border-radius: var(--radius);
+      margin-bottom: 12px; border: 1px solid var(--border);
+    }
+    .cp-rating-big { font-family: 'Barlow Condensed', sans-serif; font-size: 40px; font-weight: 800; color: var(--text); line-height: 1; }
+    .cp-rating-stars { display: flex; gap: 3px; margin-bottom: 3px; }
+    .cp-star-f { font-size: 16px; color: var(--orange); }
+    .cp-star-e { font-size: 16px; color: var(--text-dim); }
+    .cp-rating-count { font-size: 11.5px; color: var(--text-dim); }
+
+    /* Worker review of company */
+    .cp-review {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px;
+    }
+    .cp-review__header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .cp-review__name  { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+    .cp-review__date  { font-size: 11px; color: var(--text-dim); }
+    .cp-review__text  { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+
+    /* Contact aside */
+    .cp-contact-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 16px 18px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .cp-contact-row {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 12.5px; color: var(--text-muted);
+      padding: 6px 0; border-bottom: 1px solid var(--border);
+    }
+    .cp-contact-row:last-child { border-bottom: none; }
+    .cp-contact-row svg { width: 13px; height: 13px; color: var(--orange); flex-shrink: 0; }
+    .cp-contact-row a { color: var(--text); }
+
+    /* Apply CTA */
+    .cp-apply-card {
+      background: linear-gradient(160deg, rgba(255,107,0,.07), var(--surface));
+      border: 1px solid rgba(255,107,0,.3);
+      border-radius: var(--radius-md); padding: 16px 18px;
+      text-align: center;
+    }
+    .cp-apply-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .cp-apply-desc  { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+
+    @media(max-width:768px) {
+      .cp-body { grid-template-columns: 1fr; }
+      .cp-col-aside { position: static; }
+      .cp-stats { grid-template-columns: repeat(3,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ TOPNAV ════════════════════════════════════════════ -->
+  <nav class="topnav">
+    <div class="topnav__inner">
+      <a class="topnav__brand" href="index.html">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M2 18h20v2H2z"/><path d="M12 4C8 4 5 8 5 12v6h14v-6c0-4-3-8-7-8z"/>
+            <line x1="12" y1="4" x2="12" y2="12"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </div>
+        <span class="brand-name">Constru<em>linker</em></span>
+      </a>
+      <div class="topnav__links">
+        <button class="nav-link" onclick="window.location.href='worker-dashboard.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Mi panel</span>
+        </button>
+        <button class="nav-link" onclick="window.location.href='worker-dashboard.html?page=empleo'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+          <span>Ofertas</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══ PAGE ══════════════════════════════════════════════ -->
+  <div class="cp-page" id="cpPage">
+    <!-- Inyectado por JS -->
+  </div>
+
+  <!-- ══ TOAST ════════════════════════════════════════════ -->
+  <div class="toast" id="toastEl">
+    <div class="toast__icon" id="toastIcon"></div>
+    <div class="toast__body"><strong id="toastTitle"></strong><span id="toastSub"></span></div>
+  </div>
+
+  <script>
+  'use strict';
+
+  /* ── DATOS ────────────────────────────────────────────── */
+  const COMPANY_REVIEWS = [
+    { worker:'Rafael Montoya', role:'Ing. Civil', rating:5, text:'Excelente empresa. Pagan puntual, tratan bien al equipo y los proyectos están bien organizados.', date:'Mar 2025' },
+    { worker:'Diego Paredes', role:'Residente de Obra', rating:4, text:'Buen ambiente de trabajo. La comunicación con el cliente podría mejorar pero en general muy positivo.', date:'Ene 2025' },
+    { worker:'Sofía Quispe', role:'Técnico PRL', rating:5, text:'Cumplen con todas las normas de seguridad. Se nota que valoran la prevención. Totalmente recomendables.', date:'Nov 2024' },
+  ];
+
+  /* ── INIT ─────────────────────────────────────────────── */
+  function init() {
+    const empresa = getEmpresaData();
+    renderCompanyPage(empresa);
+  }
+
+  function getEmpresaData() {
+    try {
+      const stored = JSON.parse(localStorage.getItem('construlinker_empresa') || '{}');
+      return {
+        nombre:    stored.nombre    || 'Constructora Arenas S.A.C.',
+        tipo:      stored.tipo      || 'Constructora general',
+        empleados: stored.empleados || '45',
+        ubicacion: stored.ubicacion || 'San Isidro, Lima',
+        telefono:  stored.telefono  || '+51 01 234 5678',
+        web:       stored.web       || 'www.constructoraarenas.pe',
+        desc:      stored.desc      || 'Constructora especializada en obras civiles y edificaciones residenciales en Lima Metropolitana. Más de 15 años de experiencia con proyectos de gran envergadura en los principales distritos de la capital.',
+      };
+    } catch(e) { return {}; }
+  }
+
+  function getPublishedOffers() {
+    try { return JSON.parse(localStorage.getItem('construlinker_offers') || '[]'); } catch(e) { return []; }
+  }
+
+  /* ── RENDER ───────────────────────────────────────────── */
+  function renderCompanyPage(e) {
+    const avgRating = (COMPANY_REVIEWS.reduce((s,r)=>s+r.rating,0)/COMPANY_REVIEWS.length).toFixed(1);
+    const offers = getPublishedOffers();
+    const slug = e.nombre.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').slice(0,20);
+
+    document.title = `${e.nombre} — Construlinker`;
+
+    document.getElementById('cpPage').innerHTML = `
+      <button style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-muted);background:none;border:none;cursor:pointer;margin-bottom:16px;transition:color var(--trans)" onclick="history.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><polyline points="15,18 9,12 15,6"/></svg>
+        Volver
+      </button>
+
+      <!-- Cover -->
+      <div class="cp-cover">
+        <div class="cp-cover__bg"></div>
+        <div class="cp-cover__body">
+          <div class="cp-logo" style="background:linear-gradient(135deg,#7F2A4A,#4A2A7F)">CA</div>
+          <div class="cp-info">
+            <div class="cp-name">${e.nombre}</div>
+            <div class="cp-type">${e.tipo} · ${e.ubicacion}</div>
+            <div class="cp-meta">
+              <div class="cp-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                ${e.empleados} empleados
+              </div>
+              <div class="cp-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                ${e.ubicacion}
+              </div>
+              <div class="cp-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                ${e.web || 'construlinker.pe/' + slug}
+              </div>
+            </div>
+            <div class="cp-verified">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="11" height="11" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+              Empresa verificada en Construlinker
+            </div>
+          </div>
+          <div class="cp-actions">
+            <button class="btn-orange" onclick="applyToCompany()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+              Enviar mi perfil
+            </button>
+            <button class="btn-ghost" onclick="copyLink('construlinker.pe/${slug}')">Compartir</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="cp-body">
+        <div class="cp-col-main">
+
+          <!-- Stats -->
+          <div class="cp-card">
+            <div class="cp-card__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/></svg>
+              Actividad en la plataforma
+            </div>
+            <div class="cp-stats">
+              <div class="cp-stat"><div class="cp-stat__n">28</div><div class="cp-stat__l">Contrataciones</div></div>
+              <div class="cp-stat"><div class="cp-stat__n">${offers.length || 3}</div><div class="cp-stat__l">Ofertas activas</div></div>
+              <div class="cp-stat"><div class="cp-stat__n">${avgRating}</div><div class="cp-stat__l">Valoración media</div></div>
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="cp-card">
+            <div class="cp-card__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+              Sobre la empresa
+            </div>
+            <p class="cp-about">${e.desc}</p>
+          </div>
+
+          <!-- Ofertas publicadas -->
+          <div class="cp-card">
+            <div class="cp-card__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+              Ofertas de trabajo activas
+              <span class="badge-count">${offers.length || 3}</span>
+            </div>
+            ${renderOfertasPublicas(offers)}
+          </div>
+
+          <!-- Valoraciones de trabajadores -->
+          <div class="cp-card">
+            <div class="cp-card__title">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+              Valoraciones de trabajadores
+            </div>
+            <div class="cp-rating-summary">
+              <div class="cp-rating-big">${avgRating}</div>
+              <div>
+                <div class="cp-rating-stars">${renderStars(parseFloat(avgRating))}</div>
+                <div class="cp-rating-count">${COMPANY_REVIEWS.length} valoraciones de profesionales</div>
+              </div>
+            </div>
+            ${COMPANY_REVIEWS.map(r => `
+              <div class="cp-review">
+                <div class="cp-review__header">
+                  <div class="avatar-circle sm" style="background:linear-gradient(135deg,#2A4A6E,#3A6A9E);font-size:10px;font-weight:700;color:#fff">${r.worker.split(' ').map(w=>w[0]).join('')}</div>
+                  <div class="cp-review__name">${r.worker}</div>
+                  <div style="display:flex;gap:1px">${[1,2,3,4,5].map(i=>`<span style="font-size:12px;color:${i<=r.rating?'var(--orange)':'var(--text-dim)'}">★</span>`).join('')}</div>
+                  <div class="cp-review__date">${r.date}</div>
+                </div>
+                <div class="cp-review__text">"${r.text}"</div>
+              </div>`).join('')}
+          </div>
+
+        </div>
+
+        <!-- ASIDE -->
+        <div class="cp-col-aside">
+
+          <!-- CTA para trabajador -->
+          <div class="cp-apply-card">
+            <div class="cp-apply-title">¿Te interesa trabajar aquí?</div>
+            <div class="cp-apply-desc">Envía tu perfil directamente a esta empresa. Recibirán tu especialidad, experiencia y disponibilidad.</div>
+            <button class="btn-orange w-full" onclick="applyToCompany()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+              Enviar mi perfil
+            </button>
+          </div>
+
+          <!-- Contacto -->
+          <div class="cp-contact-card">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">Contacto</div>
+            <div class="cp-contact-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              ${e.ubicacion}
+            </div>
+            ${e.telefono ? `<div class="cp-contact-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.1 1.22 2 2 0 012.1.01h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L6.27 7.9a16 16 0 006.18 6.18l.98-.98a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              ${e.telefono}
+            </div>` : ''}
+            ${e.web ? `<div class="cp-contact-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              <a href="https://${e.web}" target="_blank">${e.web}</a>
+            </div>` : ''}
+            <div class="cp-contact-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+              RUC verificado
+            </div>
+          </div>
+
+          <!-- Compartir perfil -->
+          <div class="cp-card" style="padding:14px 16px">
+            <div class="cp-card__title" style="margin-bottom:10px">Compartir empresa</div>
+            <div style="display:flex;gap:6px">
+              <div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:6px 10px;font-size:11px;color:var(--text-dim);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">construlinker.pe/${slug}</div>
+              <button class="btn-orange sm" onclick="copyLink('construlinker.pe/${slug}')">Copiar</button>
+            </div>
+          </div>
+
+        </div>
+      </div>`;
+  }
+
+  function renderOfertasPublicas(offers) {
+    const demo = [
+      { titulo:'3 Oficiales Albañiles — Torre Miraflores', cat:'Obra gruesa', ubicacion:'Miraflores, Lima', tipo:'Jornada completa', time:'Hace 2h', urgente:true },
+      { titulo:'Residente de Obra — Edificio Surco', cat:'Técnicos', ubicacion:'Surco, Lima', tipo:'Obra completa', time:'Ayer', urgente:false },
+      { titulo:'Electricista IIEE — Almacén Callao', cat:'Instalaciones', ubicacion:'Callao, Lima', tipo:'Por obra', time:'Hace 3d', urgente:false },
+    ];
+    const list = offers.length ? offers.slice(0,5) : demo;
+    if (!list.length) return '<div style="font-size:12.5px;color:var(--text-dim);padding:8px 0">No hay ofertas activas en este momento.</div>';
+    return list.map(o => `
+      <div class="cp-oferta ${(o.urgente||o.urgent)?'urgent':''}">
+        <div class="cp-of-title">
+          ${(o.urgente||o.urgent) ? '<span style="font-size:9px;font-weight:800;background:var(--orange);color:#000;padding:1px 5px;border-radius:2px;margin-right:5px">URGENTE</span>' : ''}
+          ${o.titulo || o.title || ''}
+        </div>
+        <div class="cp-of-meta">${o.cat || ''} · ${o.ubicacion || o.location || ''} · ${o.time}</div>
+        <div class="cp-of-tags">
+          <span class="cp-of-tag">${o.tipo || o.type || 'Jornada completa'}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderStars(rating) {
+    return [1,2,3,4,5].map(i =>
+      `<span class="${i <= Math.floor(rating) ? 'cp-star-f' : 'cp-star-e'}">★</span>`
+    ).join('');
+  }
+
+  function applyToCompany() {
+    showToast('Perfil enviado', 'Constructora Arenas ha recibido tu perfil y datos de contacto.');
+  }
+
+  function copyLink(url) {
+    try { navigator.clipboard.writeText('https://' + url); } catch(e){}
+    showToast('Enlace copiado', url);
+  }
+
+  let toastTimer;
+  function showToast(title, sub, ok=true) {
+    const el = document.getElementById('toastEl');
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastSub').textContent   = sub;
+    document.getElementById('toastIcon').innerHTML = ok
+      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><polyline points="20,6 9,17 4,12"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>`;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
