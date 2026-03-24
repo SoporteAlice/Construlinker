@@ -11,7 +11,10 @@ function getSession() {
 }
 function isWorkerRole() {
   const s = getSession();
+  
+  if (s.type === 'empresa') return false;
   if (s.type === 'trabajador') return true;
+  
   try { return !!JSON.parse(localStorage.getItem('cl_worker') || '{}').profile?.isWorker; } catch(e) { return false; }
 }
 
