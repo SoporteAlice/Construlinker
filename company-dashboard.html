@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Construlinker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="worker-styles.css"/>
+  <script>
+    (function(){
+      try{ var s=JSON.parse(localStorage.getItem('cl_session')||'{}'); if(!s.loggedIn) window.location.replace('index.html'); }catch(e){ window.location.replace('index.html'); }
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ══ TOPNAV ═══════════════════════════════════════════ -->
+<nav class="topnav" id="topnav">
+  <div class="topnav__inner">
+
+    <!-- Brand -->
+    <a class="topnav__brand" href="#" onclick="navigate('feed');return false;">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M2 18h20v2H2z"/><path d="M12 4C8 4 5 8 5 12v6h14v-6c0-4-3-8-7-8z"/>
+          <line x1="12" y1="4" x2="12" y2="12"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </div>
+      <span class="brand-name">Constru<em>linker</em></span>
+    </a>
+
+    <!-- Search -->
+    <div class="topnav__search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" placeholder="Busca oficio, empresa o especialidad…" id="globalSearch"/>
+    </div>
+
+    <!-- Nav links — inyectados por main.js según rol -->
+    <div class="topnav__links" id="navLinks">
+      <!-- Inicio (siempre) -->
+      <button class="nav-link active" data-page="feed" onclick="navigate('feed')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+        <span>Inicio</span>
+      </button>
+      <!-- Links adicionales por rol -->
+      <div id="navRoleLinks" style="display:contents"></div>
+      <!-- Mi Perfil (siempre) -->
+      <button class="nav-link" data-page="perfil" onclick="navigate('perfil')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Mi Perfil</span>
+      </button>
+    </div>
+
+    <!-- Mensajes (siempre) -->
+    <a class="topnav__icon-btn" href="messages.html" title="Mensajes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span class="topnav__icon-badge" id="msgBadge" style="display:none">0</span>
+    </a>
+
+    <!-- Notificaciones (siempre) -->
+    <div class="topnav__icon-btn" id="notifBtn" onclick="toggleNotifPanel()" title="Notificaciones">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="18" height="18"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <span class="topnav__icon-badge" id="notifBadge" style="display:none">0</span>
+    </div>
+
+    <!-- Widget contextual: créditos (empresa) o disponibilidad (trabajador) -->
+    <div id="navWidget"></div>
+
+    <!-- Avatar + menú usuario -->
+    <div class="nav-user-menu" id="navUserMenu" onclick="toggleUserMenu()">
+      <div class="nav-user-avatar" id="navAvatar">?</div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="11" height="11"><polyline points="6,9 12,15 18,9"/></svg>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Notification panel -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel__header">
+    <span class="notif-panel__title">Notificaciones</span>
+    <button class="link-btn" onclick="markAllRead()" style="font-size:11px">Marcar todo leído</button>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+</div>
+
+<!-- Search dropdown -->
+<div class="search-dropdown" id="searchDropdown"></div>
+
+<!-- User dropdown -->
+<div class="user-dropdown" id="userDropdown">
+  <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border)">
+    <div style="font-size:14px;font-weight:700;color:var(--tx,var(--text))" id="udName">Usuario</div>
+    <div style="font-size:11px;color:var(--text-muted)" id="udRole">Empresa</div>
+  </div>
+  <button class="ud-item" onclick="navigate('perfil');toggleUserMenu()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Mi perfil
+  </button>
+  <button class="ud-item" id="udCredits" onclick="navigate('creditos');toggleUserMenu()" style="display:none">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+    Mis créditos
+  </button>
+  <button class="ud-item" onclick="window.location.href='messages.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Mensajes
+  </button>
+  <div style="height:1px;background:var(--border)"></div>
+  <button class="ud-item ud-logout" onclick="logout()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="14" height="14"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Cerrar sesión
+  </button>
+</div>
+
+<!-- Semáforo créditos (empresa) -->
+<div class="semaforo-banner" id="semaforoBanner" style="display:none">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  <span id="semaforoText"></span>
+  <button onclick="navigate('creditos')" class="semaforo-btn">Comprar ahora</button>
+</div>
+
+<!-- ══ MAIN ══════════════════════════════════════════════ -->
+<main class="app-main">
+
+  <!-- ── PAGE: INICIO ─────────────────────────────────── -->
+  <div class="page active" id="page-feed">
+    <div class="layout-feed">
+      <!-- Sidebar izquierdo: inyectado por main.js -->
+      <aside class="sidebar-left" id="sidebarLeft"></aside>
+
+      <!-- Centro: mismo para ambos roles -->
+      <section class="feed-center">
+        <div class="post-composer">
+          <div class="avatar-circle sm" id="composerAvatar" style="background:linear-gradient(135deg,#7F2A4A,#4A2A7F)">?</div>
+          <div class="composer-input" onclick="document.getElementById('composerActions').style.display='flex'">
+            <span id="composerHint">Publica una novedad…</span>
+          </div>
+        </div>
+        <div class="composer-actions" id="composerActions"></div>
+        <div id="feedPosts"></div>
+      </section>
+
+      <!-- Sidebar derecho: inyectado por main.js -->
+      <aside class="sidebar-right" id="sidebarRight"></aside>
+    </div>
+  </div>
+
+  <!-- ── PAGE: PERSONAL (empresa) / EMPRESAS (trabajador) ─ -->
+  <div class="page" id="page-buscar">
+    <div class="buscar-layout">
+      <!-- Filtros (empresa) o buscador (trabajador) — inyectado -->
+      <aside class="filter-sidebar" id="buscarSidebar">
+        <div class="filter-header">Filtros</div>
+        <div class="filter-group">
+          <div class="filter-group__title">Disponibilidad</div>
+          <label class="filter-check"><input type="checkbox" class="f-disp" value="available" checked onchange="applyFilters()"> Disponible</label>
+          <label class="filter-check"><input type="checkbox" class="f-disp" value="limited"   checked onchange="applyFilters()"> Disp. limitada</label>
+          <label class="filter-check"><input type="checkbox" class="f-disp" value="busy"             onchange="applyFilters()"> No disponible</label>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group__title">Categoría</div>
+          <label class="filter-check"><input type="checkbox" class="f-cat" value="all" checked onchange="applyFilters()"> Todas</label>
+          <label class="filter-check"><input type="checkbox" class="f-cat" value="Obra gruesa"   onchange="applyFilters()"> Obra Gruesa</label>
+          <label class="filter-check"><input type="checkbox" class="f-cat" value="Acabados"      onchange="applyFilters()"> Acabados</label>
+          <label class="filter-check"><input type="checkbox" class="f-cat" value="Instalaciones" onchange="applyFilters()"> Instalaciones</label>
+          <label class="filter-check"><input type="checkbox" class="f-cat" value="Maquinaria"    onchange="applyFilters()"> Maquinaria</label>
+          <label class="filter-check"><input type="checkbox" class="f-cat" value="Técnicos"      onchange="applyFilters()"> Técnicos</label>
+          <label class="filter-check"><input type="checkbox" class="f-cat" value="Auxiliares"    onchange="applyFilters()"> Auxiliares</label>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group__title">Experiencia</div>
+          <label class="filter-check"><input type="radio" name="exp" value="all"    checked onchange="applyFilters()"> Cualquiera</label>
+          <label class="filter-check"><input type="radio" name="exp" value="junior"         onchange="applyFilters()"> 0–3 años</label>
+          <label class="filter-check"><input type="radio" name="exp" value="mid"            onchange="applyFilters()"> 4–9 años</label>
+          <label class="filter-check"><input type="radio" name="exp" value="senior"         onchange="applyFilters()"> 10+ años</label>
+        </div>
+      </aside>
+      <div class="buscar-results" id="buscarResults">
+        <div class="buscar-topbar">
+          <div>
+            <span class="results-title" id="buscarTitle">Profesionales Verificados</span>
+            <span class="results-count" id="resultsCount"></span>
+          </div>
+          <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+            <option value="recent">Más reciente</option>
+            <option value="exp">Mayor experiencia</option>
+            <option value="avail">Disponible primero</option>
+          </select>
+        </div>
+        <div class="alert-danger" id="alertNoCredits" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+          <div><strong>Sin créditos.</strong> Compra un pack para ver contactos.</div>
+          <button class="btn-orange sm" onclick="navigate('creditos')">Comprar pack</button>
+        </div>
+        <div class="prof-grid" id="profGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: PERFILES URGENTES (empresa) ────────────── -->
+  <div class="page" id="page-urgentes">
+    <div style="max-width:1100px;margin:0 auto;padding:24px 20px">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:4px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" width="20" height="20" stroke-linecap="round" style="vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          Perfiles Urgentes
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">Profesionales disponibles para incorporarse hoy o mañana. Accede con 1 crédito.</div>
+      </div>
+      <div class="prof-grid" id="urgentesGrid"></div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: CRÉDITOS (empresa) ─────────────────────── -->
+  <div class="page" id="page-creditos">
+    <div class="creditos-layout">
+      <div class="creditos-main">
+        <div class="credits-hero">
+          <div>
+            <div class="credits-hero__label">SALDO ACTUAL</div>
+            <div class="credits-hero__value" id="creditsHeroValue">10</div>
+            <div class="credits-hero__sub">créditos disponibles · válidos 12 meses</div>
+          </div>
+          <svg viewBox="0 0 24 24" fill="currentColor" width="80" height="80" style="opacity:.08"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+        </div>
+        <div class="semaforo-inline" id="semaforoInline" style="display:none">
+          <div class="semaforo-dot" id="semaforoDot"></div>
+          <span id="semaforoInlineText"></span>
+          <button class="semaforo-btn sm" onclick="scrollToPacks()">Ver packs</button>
+        </div>
+        <div class="historial-section">
+          <div class="historial-header">
+            <span>Historial de movimientos</span>
+            <button class="link-btn" onclick="clearHistory()">Borrar historial</button>
+          </div>
+          <div id="historialList"></div>
+        </div>
+      </div>
+      <div class="creditos-sidebar" id="packsSection">
+        <div class="packs-title">Elige tu pack de créditos</div>
+        <div class="packs-list" id="packsGrid"></div>
+        <div class="packs-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="13" height="13" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Pago seguro. Los créditos no caducan en 12 meses y los packs se pueden combinar.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: MI PERFIL ──────────────────────────────── -->
+  <div class="page" id="page-perfil">
+    <div id="perfilContent"><!-- inyectado por main.js --></div>
+  </div>
+
+  <!-- ── PAGE: OFERTAS DE EMPLEO (trabajador) ─────────── -->
+  <div class="page" id="page-empleo">
+    <div class="w-empleo-layout">
+      <div class="w-edit-header" style="padding:20px 20px 0">
+        <div>
+          <div class="w-edit-title">Ofertas de Empleo</div>
+          <div class="w-edit-sub">Publicadas por empresas en Construlinker.</div>
+        </div>
+        <select class="sort-select" id="empleoFilter" onchange="renderEmpleos()">
+          <option value="all">Todas las categorías</option>
+          <option value="Obra gruesa">Obra Gruesa</option>
+          <option value="Acabados">Acabados</option>
+          <option value="Instalaciones">Instalaciones</option>
+          <option value="Maquinaria">Maquinaria</option>
+          <option value="Técnicos">Técnicos</option>
+          <option value="Auxiliares">Auxiliares</option>
+        </select>
+      </div>
+      <div class="empleo-grid" id="empleoGrid"></div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: MIS DOCUMENTOS (trabajador) ────────────── -->
+  <div class="page" id="page-documentos">
+    <div class="w-docs-layout">
+      <div class="w-edit-header" style="padding:20px 20px 0">
+        <div>
+          <div class="w-edit-title">Mis Documentos</div>
+          <div class="w-edit-sub">Las empresas usan 1 crédito para descargar cada documento.</div>
+        </div>
+      </div>
+      <div class="docs-main-grid" id="docsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: ACTIVIDAD ──────────────────────────────── -->
+  <div class="page" id="page-actividad">
+    <div id="actividadContent" style="max-width:900px;margin:0 auto;padding:24px 20px"></div>
+  </div>
+
+</main>
+
+<!-- ══ MODALES ══════════════════════════════════════════ -->
+<!-- Perfil trabajador (empresa) -->
+<div class="modal-overlay" id="workerModal" onclick="closeModalOverlay(event,'workerModal')">
+  <div class="modal-box" id="workerModalBox"></div>
+</div>
+<!-- Compra pack -->
+<div class="modal-overlay" id="buyModal" onclick="closeModalOverlay(event,'buyModal')">
+  <div class="modal-box small" id="buyModalBox"></div>
+</div>
+<!-- Confirmar contratación (trabajador) -->
+<div class="modal-overlay" id="hireModal" onclick="closeModalOverlay(event,'hireModal')">
+  <div class="modal-box small">
+    <div class="modal-header">
+      <div class="modal-title">Confirmar contratación</div>
+      <button class="modal-close" onclick="closeModal('hireModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13.5px;color:var(--text-muted);line-height:1.65;margin-bottom:16px">Indica el tipo de contrato para actualizar tu disponibilidad automáticamente:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+        <button class="hire-type-btn" onclick="confirmHire('full')"><span>Jornada completa</span><span style="font-size:11px;color:var(--text-muted)">→ No disponible</span></button>
+        <button class="hire-type-btn" onclick="confirmHire('partial')"><span>Contrato parcial / por obra</span><span style="font-size:11px;color:var(--text-muted)">→ Disponibilidad limitada</span></button>
+      </div>
+      <button class="btn-ghost w-full" onclick="closeModal('hireModal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+<!-- Baja voluntaria (trabajador) -->
+<div class="modal-overlay" id="leaveModal" onclick="closeModalOverlay(event,'leaveModal')">
+  <div class="modal-box small">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--red)">Baja voluntaria</div>
+      <button class="modal-close" onclick="closeModal('leaveModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13.5px;color:var(--text-muted);line-height:1.65;margin-bottom:20px">Tu perfil quedará como <strong>No disponible</strong> y no aparecerás en búsquedas. Puedes reactivarlo cuando quieras.</p>
+      <div style="display:flex;gap:10px">
+        <button class="btn-orange" style="background:var(--red);flex:1" onclick="executeBaja()">Confirmar baja</button>
+        <button class="btn-ghost" style="flex:1" onclick="closeModal('leaveModal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toastEl">
+  <div class="toast__icon" id="toastIcon"></div>
+  <div class="toast__body"><strong id="toastTitle"></strong><span id="toastSub"></span></div>
+</div>
+
+<script src="app.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

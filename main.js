@@ -58,7 +58,12 @@ function defaultWorker() {
     tags:['Pladur','Tabiquería seca','Falsos techos','Nivel láser'],
     about:'Oficial de primera especializado en montaje de pladur y tabiquería seca.',
     phone:'+51 987 123 456', email:'juan@gmail.com', whatsapp:'51987123456',
-    docs:{ cv:false, prl:false, cert:false, dni:false },
+    exp:3,
+    experience:[
+      { company:'Constructora Arenas', role:'Oficial de Pladur', years:'3', period:'2019-2022', details:'Montaje de tabiques y falsos techos en proyectos residenciales.' },
+      { company:'Buildex Contratistas', role:'Carpintero', years:'2', period:'2017-2019', details:'Instalación de encofrados y revestimientos en obra civil.' }
+    ],
+    docs:{ cv:false, cvName:'', prl:false, prlName:'', cert:false, certName:'', dni:false, dniName:'' },
     viewedBy:[
       { company:'Constructora Arenas', action:'Ver contacto',  time:'Hace 2 horas', color:['#7F2A4A','#4A2A7F'] },
       { company:'Buildex Contratistas',action:'Descargó CV',   time:'Ayer, 15:30',  color:['#2A4A1A','#3A6A2A'] },
@@ -360,7 +365,7 @@ function toggleUserMenu() {
 
 function logout() {
   localStorage.removeItem('cl_session');
-  window.location.replace('landing.html');
+  window.location.replace('company-dashboard.html');
 }
 
 document.addEventListener('click', e => {
@@ -381,13 +386,17 @@ function renderEmpresasPage() {
   if (title)   title.textContent = 'Empresas en Construlinker';
 
   if (results) results.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-      <span style="font-size:13px;color:var(--text-muted)">${EMPRESAS.length} empresas registradas</span>
-      <input type="text" placeholder="Buscar empresa…" oninput="filterEmpresasUI(this.value)"
-        style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:inherit;font-size:13px;padding:8px 13px;outline:none;width:220px;transition:border-color var(--trans)"
-        onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor=''"/>
+    <div class="buscador-empresas">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <span style="font-size:13px;color:var(--text-muted)">${EMPRESAS.length} empresas registradas</span>
+        <input type="text" placeholder="Buscar empresa…" oninput="filterEmpresasUI(this.value)"
+          style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:inherit;font-size:13px;padding:8px 13px;outline:none;width:220px;transition:border-color var(--trans)"
+          onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor=''"/>
+      </div>
     </div>
-    <div class="prof-grid" id="empresasGrid">${buildEmpresaCards(EMPRESAS)}</div>`;
+    <div class="empresas-cards-container">
+      <div class="prof-grid empresas-grid" id="empresasGrid">${buildEmpresaCards(EMPRESAS)}</div>
+    </div>`;
 }
 
 function buildEmpresaCards(list) {
@@ -569,9 +578,11 @@ function renderPerfilPage() {
 
 /* ── PERFIL TRABAJADOR ───────────────────────────────────── */
 let editSkills = [];
+let editExperience = [];
 function renderWorkerPerfil() {
   if (!W) return;
   editSkills = [...(W.tags||[])];
+  editExperience = [...(W.experience||[])];
   document.getElementById('perfilContent').innerHTML = `
     <div class="w-edit-layout">
       <div class="w-edit-header">
@@ -606,7 +617,10 @@ function renderWorkerPerfil() {
               <div class="field"><label>Teléfono / WhatsApp</label><input type="tel" id="epPh" value="${W.phone||''}"/></div>
               <div class="field"><label>Email</label><input type="email" id="epE" value="${W.email||''}"/></div>
             </div>
-            <div class="form-row"><div class="field"><label>Ubicación</label><input type="text" id="epL" value="${W.location||''}"/></div></div>
+            <div class="form-row cols-2">
+              <div class="field"><label>Ubicación</label><input type="text" id="epL" value="${W.location||''}"/></div>
+              <div class="field"><label>Años de experiencia</label><input type="number" id="epTotalExp" min="0" value="${W.exp||''}"/></div>
+            </div>
           </div>
         </div>
         <div class="w-edit-card">
@@ -626,6 +640,56 @@ function renderWorkerPerfil() {
           </div>
         </div>
       </div>
+
+      <div class="w-edit-card full-width">
+        <div class="w-edit-card__title">Experiencia laboral</div>
+        <div class="edit-form" id="expList">
+          ${editExperience.map((exp, idx)=>`
+            <div class="exp-row" style="border:1px solid var(--border);padding:10px;margin-bottom:8px;border-radius:var(--radius);">
+              <div class="form-row cols-2">
+                <div class="field"><label>Empresa</label><input type="text" value="${exp.company||''}" oninput="updateExperienceField(${idx},'company',this.value)"/></div>
+                <div class="field"><label>Puesto</label><input type="text" value="${exp.role||''}" oninput="updateExperienceField(${idx},'role',this.value)"/></div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="field"><label>Años</label><input type="number" min="0" value="${exp.years||''}" oninput="updateExperienceField(${idx},'years',this.value)"/></div>
+                <div class="field"><label>Periodo</label><input type="text" value="${exp.period||''}" oninput="updateExperienceField(${idx},'period',this.value)"/></div>
+              </div>
+              <div class="form-row"><div class="field"><label>Descripción</label><textarea rows="2" oninput="updateExperienceField(${idx},'details',this.value)">${exp.details||''}</textarea></div></div>
+              <div style="text-align:right"><button class="btn-ghost" onclick="removeWorkerExperience(${idx})">Eliminar</button></div>
+            </div>`).join('')}
+          <button class="btn-ghost" style="width:fit-content;margin-top:6px" onclick="addWorkerExperience()">+ Agregar experiencia</button>
+        </div>
+      </div>
+
+      <div class="w-edit-card full-width">
+        <div class="w-edit-card__title">Documentos</div>
+        <div class="edit-form">
+          <div class="form-row cols-2">
+            <div class="field">
+              <label>Currículum (CV)</label>
+              <input type="file" id="epCv" onchange="handleDocFile('cv',this.files[0])"/>
+              <small>${W.docs?.cv ? 'Subido: '+(W.docs.cvName||'CV') : 'No cargado'}</small>
+            </div>
+            <div class="field">
+              <label>Certificados</label>
+              <input type="file" id="epCert" onchange="handleDocFile('cert',this.files[0])"/>
+              <small>${W.docs?.cert ? 'Subido: '+(W.docs.certName||'Certificado') : 'No cargado'}</small>
+            </div>
+          </div>
+          <div class="form-row cols-2">
+            <div class="field">
+              <label>PRL</label>
+              <input type="file" id="epPrl" onchange="handleDocFile('prl',this.files[0])"/>
+              <small>${W.docs?.prl ? 'Subido: '+(W.docs.prlName||'PRL') : 'No cargado'}</small>
+            </div>
+            <div class="field">
+              <label>DNI / NIE</label>
+              <input type="file" id="epDni" onchange="handleDocFile('dni',this.files[0])"/>
+              <small>${W.docs?.dni ? 'Subido: '+(W.docs.dniName||'DNI/NIE') : 'No cargado'}</small>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>`;
   initSkills();
 }
@@ -642,13 +706,16 @@ function saveWorkerPerfil() {
   if (!W) return;
   const n=gv('epN'), a=gv('epA');
   if (n) W.name = [n,a].filter(Boolean).join(' ');
-  W.phone    = gv('epPh')  || W.phone;
-  W.email    = gv('epE')   || W.email;
-  W.location = gv('epL')   || W.location;
-  W.specialty= gv('epSp')  || W.specialty;
-  W.about    = gv('epAb')  || W.about;
-  W.category = document.getElementById('epCat')?.value || W.category;
-  W.tags     = [...editSkills];
+  W.phone       = gv('epPh')  || W.phone;
+  W.email       = gv('epE')   || W.email;
+  W.location    = gv('epL')   || W.location;
+  W.specialty   = gv('epSp')  || W.specialty;
+  W.about       = gv('epAb')  || W.about;
+  W.category    = document.getElementById('epCat')?.value || W.category;
+  W.exp         = parseInt(gv('epTotalExp')) || W.exp;
+  W.tags        = [...editSkills];
+  W.experience  = [...editExperience];
+  W.docs        = W.docs || {};
   saveWorker(); buildWorkerSidebar(); updateAvailNav();
   showToast('Perfil actualizado', 'Los cambios ya son visibles para las empresas.');
 }
@@ -679,6 +746,29 @@ function renderSkills() {
     ch.innerHTML=`${s}<button class="skill-chip__remove" onclick="editSkills=editSkills.filter(x=>x!=='${s}');renderSkills()">×</button>`;
     wrap.insertBefore(ch,inp);
   });
+}
+
+function addWorkerExperience() {
+  editExperience.push({company:'', role:'', years:'', period:'', details:''});
+  renderWorkerPerfil();
+}
+
+function removeWorkerExperience(i) {
+  editExperience.splice(i,1);
+  renderWorkerPerfil();
+}
+
+function updateExperienceField(i,key,value) {
+  if (!editExperience[i]) return;
+  editExperience[i][key] = value;
+}
+
+function handleDocFile(type,file) {
+  if (!W || !file) return;
+  W.docs = W.docs || {};
+  W.docs[type] = true;
+  W.docs[`${type}Name`] = file.name;
+  showToast('Documento cargado', file.name);
 }
 
 /* ── PERFIL EMPRESA ──────────────────────────────────────── */

@@ -1439,7 +1439,7 @@ function applySearchFilter(q) {
 function init() {
   loadState();
 
-  // Handle URL params (e.g. index.html?page=buscar)
+  // Handle URL params (e.g. company-dashboard.html?page=buscar)
   const params = new URLSearchParams(window.location.search);
   const pageParam = params.get('page');
   if (pageParam && ['feed','buscar','creditos','perfil'].includes(pageParam)) {

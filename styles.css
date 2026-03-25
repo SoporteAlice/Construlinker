@@ -535,6 +535,16 @@ a { text-decoration:none; cursor:pointer; }
   gap:12px;
 }
 
+/* Empresas grid - más ancho para mejor visualización */
+.empresas-grid {
+  grid-template-columns:repeat(auto-fit, minmax(350px, 1fr));
+}
+
+/* Contenedor de cards de empresas */
+.empresas-cards-container {
+  display: block;
+}
+
 /* ── PROFESSIONAL CARD (LinkedIn-style) ─────────────────── */
 .prof-card {
   background:var(--card);

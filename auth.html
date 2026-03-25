@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
   <script>
-    (function(){ try{ var s=JSON.parse(localStorage.getItem('cl_session')||'{}'); if(s.loggedIn) window.location.replace('index.html'); }catch(e){} })();
+    (function(){ try{ var s=JSON.parse(localStorage.getItem('cl_session')||'{}'); if(s.loggedIn) window.location.replace('company-dashboard.html'); }catch(e){} })();
   </script>
   <style>
     :root{ --bg:#0A0A0B; --sf:#111113; --card:#18181A; --br:#252528; --brl:#333337; --tx:#EBEBEB; --tm:#888890; --td:#44444A; --or:#FF6B00; --ord:rgba(255,107,0,.1); --gn:#22C55E; --rd:#EF4444; --ra:3px; --rm:6px; --rl:10px; --tr:.18s cubic-bezier(.4,0,.2,1); }
@@ -96,7 +96,7 @@
   <!-- BRAND -->
   <div class="brand">
     <div class="brand-inner">
-      <a class="logo" href="landing.html">
+      <a class="logo" href="index.html">
         <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 18h20v2H2z"/><path d="M12 4C8 4 5 8 5 12v6h14v-6c0-4-3-8-7-8z"/><line x1="12" y1="4" x2="12" y2="12"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
         <span class="logo-name">Constru<em>linker</em></span>
       </a>
@@ -259,7 +259,7 @@ function doLogin(){
   if(!email||!pass){ err('Introduce tu email y contraseña.'); return; }
   if(!em(email)){ err('El email no es válido.'); return; }
   sess({ type:ROL||'empresa', email, loggedIn:true });
-  window.location.href='index.html';
+  window.location.href='company-dashboard.html';
 }
 
 function doRegEmp(){
@@ -273,7 +273,7 @@ function doRegEmp(){
     registeredAt:new Date().toISOString()
   })); }catch(e){}
   sess({ type:'empresa', email, loggedIn:true });
-  window.location.href='index.html';
+  window.location.href='company-dashboard.html';
 }
 
 function doRegTrab(){
@@ -296,12 +296,12 @@ function doRegTrab(){
     isWorker:true, registeredAt:new Date().toISOString()
   }})); }catch(e){}
   sess({ type:'trabajador', email, loggedIn:true });
-  window.location.href='index.html';
+  window.location.href='company-dashboard.html';
 }
 
 function demo(r){
   sess({ type:r, demo:true, loggedIn:true });
-  window.location.href='index.html';
+  window.location.href='company-dashboard.html';
 }
 
 // URL params pre-fill
