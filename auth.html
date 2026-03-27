@@ -10,7 +10,24 @@
     (function(){ try{ var s=JSON.parse(localStorage.getItem('cl_session')||'{}'); if(s.loggedIn) window.location.replace('company-dashboard.html'); }catch(e){} })();
   </script>
   <style>
-    :root{ --bg:#0A0A0B; --sf:#111113; --card:#18181A; --br:#252528; --brl:#333337; --tx:#EBEBEB; --tm:#888890; --td:#44444A; --or:#FF6B00; --ord:rgba(255,107,0,.1); --gn:#22C55E; --rd:#EF4444; --ra:3px; --rm:6px; --rl:10px; --tr:.18s cubic-bezier(.4,0,.2,1); }
+    :root{ 
+  --bg:#e2e2e2; 
+  --sf:#e2e2e2; 
+  --card:#FFFFFF; 
+  --br:#DEDAD4; 
+  --brl:#C8C3BB; 
+  --tx:#1A1A18; 
+  --tm:#5A574F; 
+  --td:#9A968E; 
+  --or:#FF6B00; 
+  --ord:rgba(255,107,0,.1); 
+  --gn:#22C55E; 
+  --rd:#EF4444; 
+  --ra:3px; 
+  --rm:6px; 
+  --rl:10px; 
+  --tr:.18s cubic-bezier(.4,0,.2,1); 
+}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%;font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased}
     .shell{display:grid;grid-template-columns:1fr 480px;min-height:100vh}
@@ -101,7 +118,7 @@
         <span class="logo-name">Constru<em>linker</em></span>
       </a>
       <h1>El personal<br>que necesitas,<br><span>hoy mismo.</span></h1>
-      <p>La red élite del sector construcción en Perú. Conecta empresas con profesionales verificados de todos los oficios.</p>
+      <p>La red élite del sector construcción en España. Conecta empresas con profesionales verificados de todos los oficios.</p>
       <div class="proofs">
         <div class="proof"><div class="proof-dot"></div>614+ profesionales activos en Lima y provincias</div>
         <div class="proof"><div class="proof-dot"></div>Contacto directo vía WhatsApp con 1 crédito</div>
@@ -287,7 +304,7 @@ function doRegTrab(){
     id:Date.now(), name:`${nom} ${ap}`, specialty:esp,
     category:g('rt-cat').value, exp:parseInt(g('rt-exp').value)||1,
     expLabel:g('rt-exp').options[g('rt-exp').selectedIndex].text,
-    location:v('rt-ubic')||'Lima, Perú',
+    location:v('rt-ubic')||'Lima, España',
     phone, email, whatsapp:phone.replace(/\D/g,''),
     availability:'available', tags:[], about:'',
     docs:{cv:false,prl:false,cert:false,dni:false},

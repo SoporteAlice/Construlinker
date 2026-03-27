@@ -18,23 +18,33 @@
   <style>
     /* ══ VARIABLES ══════════════════════════════════════════ */
     :root {
-      --bg:          #0A0A0B;
-      --surface:     #111113;
-      --card:        #18181A;
-      --border:      #252528;
-      --border-light:#333337;
-      --text:        #EBEBEB;
-      --text-muted:  #888890;
-      --text-dim:    #44444A;
-      --orange:      #FF6B00;
-      --orange-dim:  rgba(255,107,0,0.10);
-      --orange-glow: rgba(255,107,0,0.20);
-      --green:       #22C55E;
-      --radius:      3px;
-      --radius-md:   6px;
-      --radius-lg:   12px;
-      --trans:       0.18s cubic-bezier(.4,0,.2,1);
-    }
+  --bg:           #F0EDE8;
+  --surface:      #FAFAF8;
+  --card:         #FFFFFF;
+  --card-hover:   #F5F2ED;
+  --border:       #DEDAD4;
+  --border-light: #C8C3BB;
+  --text:         #1A1A18;
+  --text-muted:   #5A574F;
+  --text-dim:     #9A968E;
+  --orange:       #FF6B00;
+  --orange-dim:   rgba(255,107,0,0.10);
+  --orange-hover: #FF8533;
+  --orange-glow:  rgba(255,107,0,0.22);
+  --green:        #22C55E;
+  --green-dim:    rgba(34,197,94,0.10);
+  --yellow:       #EAB308;
+  --yellow-dim:   rgba(234,179,8,0.10);
+  --red:          #EF4444;
+  --red-dim:      rgba(239,68,68,0.10);
+  --nav-h:        58px;
+  --radius:       3px;
+  --radius-md:    6px;
+  --radius-lg:    10px;
+  --trans:        0.18s cubic-bezier(.4,0,.2,1);
+  --shadow:       0 4px 24px rgba(0,0,0,0.10);
+  --shadow-lg:    0 12px 48px rgba(0,0,0,0.16);
+}
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     html { scroll-behavior:smooth; }
     body {
@@ -54,7 +64,7 @@
     .nav {
       position: fixed; top:0; left:0; right:0;
       height: 60px; z-index:100;
-      background: rgba(10,10,11,.92);
+      background: rgba(255, 255, 255, 0.92);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(12px);
     }
@@ -614,7 +624,7 @@
     <div class="hero__content">
       <div class="hero__eyebrow">
         <span></span>
-        Red élite del sector construcción en Perú
+        Red élite del sector construcción en España
       </div>
 
       <h1 class="hero__title">

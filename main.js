@@ -783,7 +783,7 @@ function renderEmpresaPerfil() {
           <div class="avatar-circle xl" style="background:linear-gradient(135deg,#7F2A4A,#4A2A7F)">${ini}</div>
           <div class="perfil-cover__info">
             <h1 class="perfil-name" id="pND">${e.nombre||'Constructora Arenas S.A.C.'}</h1>
-            <div class="perfil-role">${e.tipo||'Empresa Constructora'} · ${e.ubicacion||'Lima, Perú'}</div>
+            <div class="perfil-role">${e.tipo||'Empresa Constructora'} · ${e.ubicacion||'Lima, España'}</div>
             <div class="perfil-meta-row">
               <span>🏗️ ${e.empleados||45} empleados</span>
               <span>📍 ${e.ubicacion||'San Isidro, Lima'}</span>

@@ -14,9 +14,9 @@
   --text:         #1A1A18;   /* carbón casi negro */
   --text-muted:   #5A574F;   /* gris oscuro */
   --text-dim:     #9A968E;   /* gris medio */
-  --orange:       #E85D00;   /* naranja construcción (más intenso en claro) */
+  --orange:       #FF6B00;   /* naranja construcción (más intenso en claro) */
   --orange-dim:   rgba(232,93,0,0.10);
-  --orange-hover: #CC5200;
+  --orange-hover: #FF6B00;
   --orange-glow:  rgba(232,93,0,0.20);
   --green:        #1A7A3A;
   --green-dim:    rgba(26,122,58,0.10);
@@ -50,7 +50,7 @@ a { text-decoration:none; cursor:pointer; }
 /* ── SCROLLBAR ─────────────────────────────────────────── */
 ::-webkit-scrollbar { width:5px; height:5px; }
 ::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+::-webkit-scrollbar-thumb { background:var(--border-light); border-radius:4px; }
 
 /* ═══════════════════════════════════════════════════════════
    TOPNAV
@@ -83,7 +83,7 @@ a { text-decoration:none; cursor:pointer; }
 }
 .brand-icon {
   width: 34px; height: 34px;
-  background: linear-gradient(135deg, #E8E0D0 0%, #D4C8B4 40%, #E0D8C8 100%);
+  background: var(--orange);
   border-radius: var(--radius);
   display: flex; align-items:center; justify-content:center;
   color: #000;
@@ -146,7 +146,7 @@ a { text-decoration:none; cursor:pointer; }
   position:relative;
 }
 .nav-link svg { width:20px; height:20px; }
-.nav-link:hover { color:var(--text); background:var(--card); }
+.nav-link:hover { color:var(--orange); background:var(--card); }
 .nav-link.active { color:var(--orange); }
 .nav-link.active::after {
   content:'';
@@ -246,7 +246,7 @@ a { text-decoration:none; cursor:pointer; }
 }
 .profile-card__banner {
   height: 56px;
-  background: linear-gradient(135deg, #1A0A0A 0%, #2A1A0A 40%, #1A0A1A 100%);
+  background: linear-gradient(135deg, #E8E0D0 0%, #D4C8B4 40%, #E0D8C8 100%);
   position:relative;
 }
 .profile-card__banner::before {
@@ -895,7 +895,7 @@ a { text-decoration:none; cursor:pointer; }
 }
 .perfil-cover__bg {
   height:110px;
-  background:linear-gradient(135deg,#1A0A0A 0%,#2A1A0A 35%,#0A0A1A 70%,#1A0A0A 100%);
+  background: linear-gradient(135deg, #E8E0D0 0%, #D4C8B4 35%, #DDD5C5 70%, #E8E0D0 100%);
   position:relative;
 }
 .perfil-cover__bg::before {
