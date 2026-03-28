@@ -691,7 +691,7 @@ a { text-decoration:none; cursor:pointer; }
   transition:background var(--trans), color var(--trans);
   white-space:nowrap;
 }
-.btn-ghost:hover { background:var(--card-hover); color:var(--text); }
+.btn-ghost:hover { border-color:#FF6B00; color:#FF6B00; }
 
 .link-btn {
   background:none; border:none;
@@ -1598,7 +1598,7 @@ a { text-decoration:none; cursor:pointer; }
   color: var(--text-muted); cursor: pointer;
   text-align: left; transition: all var(--trans);
 }
-.ud-item:hover { background: var(--card); color: var(--text); }
+.ud-item:hover { background: var(--card); color: #FF6B00; }
 .ud-item svg { flex-shrink: 0; }
 .ud-logout { color: var(--red) !important; }
 .ud-logout:hover { background: var(--red-dim) !important; color: var(--red) !important; }
